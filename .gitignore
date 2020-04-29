@@ -1,0 +1,8 @@
+
+venv/
+
+bitfinex_tBTCUSD_1m.csv
+
+*.csv
+
+*.xlsx
