@@ -1,22 +1,9 @@
 # Authors: Stan van der Avoird <stan@restica.nl>
 #
 
-import numbers
-import warnings
-
-import pandas as pd
 import ta
 import talib
-import numpy as np
-import time
-from datetime import datetime
-
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.impute import SimpleImputer
 
 # ------------------------------------- BitcoinTransformer component -------------------------------------#
 class BitcoinTransformer(BaseEstimator, TransformerMixin):
