@@ -8,60 +8,25 @@ import pandas as pd
 import ta
 import talib
 import numpy as np
-import numpy.ma as ma
-from scipy import sparse
-from scipy import stats
 import time
 from datetime import datetime
 
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.model_selection import train_test_split
-from sklearn.utils.sparsefuncs import _get_median
-from sklearn.utils.validation import check_is_fitted
-from sklearn.utils.validation import FLOAT_DTYPES
-from sklearn.utils._mask import _get_mask
-from sklearn.utils import is_scalar_nan
-from sklearn.utils import check_array
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 
-#------------------------------------- BitcoinTransformer component -------------------------------------#
+# ------------------------------------- BitcoinTransformer component -------------------------------------#
 class BitcoinTransformer(BaseEstimator, TransformerMixin):
-    """Bitcoin Transformer to prepare dataset for machine learning
-        Requirements
-        __________
-        pip install pandas
-        pip install numpy
-        pip install TA-Lib (*)
-        pip install --upgrade ta
-        ##pip install openpyxl
-        pip install -U scikit-learn
-        sudo apt-get install python3-matplotlib
-        pip install beautifulsoup4
-        pip install pytrends
-        pip install cryptory
-        pip install auto-sklearn
-
-        (*) TA-LIB dependency:
-        Download ta-lib-0.4.0-src.tar.gz http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz and:
-
-        $ tar -xzf ta-lib-0.4.0-src.tar.gz
-        $ cd ta-lib/
-        $ ./configure --prefix=/usr
-        $ make
-        $ sudo make install
-        Parameters
-        ----------
-        inputX : array with columns [timestamp, open, low, high, close, (volume)] the 'volume' column is optional but will increase performance of the model.
-            An array that contains Bitcoin's open, low, high and close values per timestamp
-            `inputX` will be used for Technical Analyses.
-
     """
-
-    # Constructor
-    def __init__(self, 
+    Bitcoin Transformer to prepare dataset for machine learning
+    Accepts dataset with 4 case sensitive columns; "Open", "Low", "High", "Close"
+    Accepts optional extra case sensitive column to calculate volume related technical indicators; "Volume"
+    And calculates Technical Indicators.
+    """
+    def __init__(self,
                  sma_close_timeperiod=3,
                  so_n=14,
                  so_d_n=3):
@@ -72,7 +37,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.so_d_n = so_d_n
 
     def _validate_input(self, X):
-        # Check whether we have a timestamp, open, low, high, close, volume columns
         if 'Open' not in X:
             raise ValueError("Missing column 'Open'. Make sure to rename your dataframe colums when needed.")
         if 'Low' not in X:
@@ -88,9 +52,24 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         return X
 
     def fit(self, X, y=None):
+        """
+        Function to train the dataset. After fitting the model can be used to make predictions, usually with a .predict() method call.
+        @param X: Training set
+        @type X: numpy array of shape [n_samples, n_features]
+        @param y: Target values.
+        @type y: numpy array of shape [n_samples]
+        @return: Trained set
+        @rtype: self
+        """
         return self
 
     def transform(self, X):
+        """
+        @param X: Training set
+        @type X: numpy array of shape [n_samples, n_features]
+        @return: Transformed array.
+        @rtype: X_newnumpy array of shape [n_samples, n_features_new]
+        """
         X = self._validate_input(X)
         X = X.copy()
         # Simple Moving Average (SMA)
@@ -143,10 +122,11 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         a volume-based indicator designed to measure the cumulative flow of money into and out of a security
         The Accumulation Distribution Line rises when the multiplier is positive and falls when the multiplier is negative.
         '''
-        ADI = ta.volume.AccDistIndexIndicator(high=X["High"], low=X["Low"], close=X["Close"],
+        if self.useVolume:
+            ADI = ta.volume.AccDistIndexIndicator(high=X["High"], low=X["Low"], close=X["Close"],
                                               volume=X["Volume"],
                                               fillna=False)
-        X['ADI'] = ADI.acc_dist_index()
+            X['ADI'] = ADI.acc_dist_index()
 
         # Moving Average Convergence Divergence (MACD)
         '''
@@ -237,7 +217,7 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         '''
         period = 3
         X['SMA_H+L+C+O'] = talib.SMA(X["High"] + X["Low"] + X["Open"] + X["Close"],
-                                           timeperiod=period)
+                                     timeperiod=period)
 
         # From here on adding random indicators according to the ta-lib library
         # ######################## OVERLAP STUDIES ############################
@@ -265,9 +245,9 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         X['SAR'] = talib.SAR(X["High"], X["Low"], acceleration=0, maximum=0)
         # SAREXT - Parabolic SAR - Extended
         X['SAREXT'] = talib.SAREXT(X["High"], X["Low"], startvalue=0, offsetonreverse=0,
-                                         accelerationinitlong=0,
-                                         accelerationlong=0, accelerationmaxlong=0, accelerationinitshort=0,
-                                         accelerationshort=0, accelerationmaxshort=0)
+                                   accelerationinitlong=0,
+                                   accelerationlong=0, accelerationmaxlong=0, accelerationinitshort=0,
+                                   accelerationshort=0, accelerationmaxshort=0)
         # T3 - Triple Exponential Moving Average (T3)
         period = 5
         X['T3'] = talib.T3(X["Close"], timeperiod=period, vfactor=0)
@@ -302,8 +282,9 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         X['CMO'] = talib.CMO(X["Close"], timeperiod=14)
         # DX - Directional Movement Index
         X['DX'] = talib.DX(X["High"], X["Low"], X["Close"], timeperiod=14)
-        # MFI - Money Flow Index
-        X['MFI'] = talib.MFI(X["High"], X["Low"], X["Close"], X["Volume"], timeperiod=14)
+        if self.useVolume:
+            # MFI - Money Flow Index
+            X['MFI'] = talib.MFI(X["High"], X["Low"], X["Close"], X["Volume"], timeperiod=14)
         # MINUS_DI - Minus Directional Indicator
         X['MINUS_DI'] = talib.MINUS_DI(X["High"], X["Low"], X["Close"], timeperiod=14)
         # MINUS_DM - Minus Directional Movement
@@ -326,16 +307,17 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         X['TRIX'] = talib.TRIX(X["Close"], timeperiod=30)
         # ULTOSC - Ultimate Oscillator
         X['ULTOSC'] = talib.ULTOSC(X["High"], X["Low"], X["Close"], timeperiod1=7,
-                                         timeperiod2=14, timeperiod3=28)
+                                   timeperiod2=14, timeperiod3=28)
 
-        # ######################## Volume Indicators ############################
-        # AD - Chaikin A/D Line
-        X['AD'] = talib.AD(X["High"], X["Low"], X["Close"], X["Volume"])
-        # ADOSC - Chaikin A/D Oscillator
-        X['ADOSC'] = talib.ADOSC(X["High"], X["Low"], X["Close"], X["Volume"],
-                                       fastperiod=3, slowperiod=10)
-        # OBV - On Balance Volume
-        X['OBV'] = talib.OBV(X["Close"], X["Volume"])
+        if self.useVolume:
+            # ######################## Volume Indicators ############################
+            # AD - Chaikin A/D Line
+            X['AD'] = talib.AD(X["High"], X["Low"], X["Close"], X["Volume"])
+            # ADOSC - Chaikin A/D Oscillator
+            X['ADOSC'] = talib.ADOSC(X["High"], X["Low"], X["Close"], X["Volume"],
+                                     fastperiod=3, slowperiod=10)
+            # OBV - On Balance Volume
+            X['OBV'] = talib.OBV(X["Close"], X["Volume"])
 
         # ######################## Cycle Indicators ############################
         # HT_DCPERIOD - Hilbert Transform - Dominant Cycle Period
@@ -363,142 +345,3 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         '''
         return X
 
-#------------------------------------- Custom help functions -------------------------------------#
-def csvToDF(input="", dropna=True, timeOutput=False):
-    """Reads a CSV as input. Converts the CSV to a pandas dataframe
-    """
-    # Load the input
-    if timeOutput:
-        print('Reading input...')
-        start_time = time.time()
-    df = pd.read_csv(input, encoding="ISO-8859-1")
-    if dropna:
-        # Clean NaN values
-        # df = ta.utils.dropna(df)
-        df = df.dropna(how='any')
-    df.index.names = ['index']
-    if timeOutput:
-        end_time = time.time()
-        print('Input read, took ' + str(end_time - start_time) + ' seconds')
-    return df
-
-def datetimeToTimestamp(input="", Date="01/01/1970", Time="00:00:00", Format="%m/%d/%Y %H:%M:%S", timeOutput=False):
-    """Reads a pandas dataframe as input. Takes 3 parameters to format datetime to timestamp
-        """
-    if timeOutput:
-        print('Generating Timestamp Column...')
-        start_time = time.time()
-    input['Time'] = input.apply(
-        lambda row: datetime.timestamp(datetime.strptime(str(row.Date + ' ' + row.Time), Format)),
-        axis=1)  # axis 1 = apply function to each row
-    del input['Date']
-    # Rename Time column to Timestamp column
-    input = input.rename({'Time': 'Timestamp'}, axis=1)
-    # Move timestamp column to first column after index
-    timestamp = input['Timestamp']
-    input.drop(labels=['Timestamp'], axis=1, inplace=True)
-    input.insert(0, 'Timestamp', timestamp)
-    if timeOutput:
-        end_time = time.time()
-        print('Time to create Timestamp: ' + str(end_time - start_time) + ' seconds')
-    return input
-
-def generateTarget(df="", method="Classification", typeRegression="Difference", intervalPeriods=1):
-    """
-    Parameters
-    _____________
-    df : pandas dataframe
-
-    method : 'Classification' or 'Regression' . Type of machine learning to generate the 'Target' column
-            if method equals 'Regression' additional parameters can be set for delta price calculations (typeRegression, 'intervalPeriods')
-
-    typeRegression : 'Difference', 'Percentage' or 'ExactPrice'
-        'Difference' : Target column = the difference between the Close price current interval and 'intervalPeriods' further as a float
-        'Percentage' : Target column = the difference between the Close price current interval and 'intervalPeriods' further in percentages
-        'ExactPrice' : Target column = the Close price of the current interval
-
-    intervalPeriods : integer > 0
-        How much intervals do we need to look in the future to calculate the difference
-    """
-    # Validate parameters
-    if not isinstance(df, pd.DataFrame):
-        raise ValueError('The df input is not a pandas dataframe')
-
-    allowed_methods = ["Classification", "Regression"]
-    if method not in allowed_methods:
-        raise ValueError("Can only use these methods: {0} "
-                         " got method={1}".format(allowed_methods,
-                                                  method))
-    if intervalPeriods < 1:
-        raise ValueError("intervalPeriods parameter must be > 0 "
-                         " got intervalPeriods={0}".format(intervalPeriods))
-
-    allowed_methods = ["Difference", "Percentage", "ExactPrice"]
-    if typeRegression not in allowed_methods:
-        raise ValueError("Can only use these types of regression: {0} "
-                         " got typeRegression={1}".format(allowed_methods,
-                                                          typeRegression))
-    # Start with function
-    if method == "Classification":
-        # Add new column 'Target' . True if Close price from this timestmap is higher than Close price of previous timestamp
-        df['Target'] = np.where(df.Close.shift(-1) > df.Close, True, False)
-    elif method == "Regression":
-        if typeRegression == "Difference":
-            df['Target'] = df.Close.shift(-intervalPeriods) - df.Close
-        elif typeRegression == "Percentage":
-            dfclose = df['Close']
-            df['Target'] = -dfclose.pct_change(periods=-intervalPeriods)
-        elif typeRegression == "Target":
-            df['Target'] = df.Close.shift(-intervalPeriods)
-
-    return df['Target']
-
-#------------------------------------- Workflow, preparing dataset ~ results of models -------------------------------------#
-# 1. Load CSV
-# 2. X = Open, Low, High, Close and Volume columns with data
-# 3. target = target column, calculate with generateTarget()
-# 4. Train test split
-# 5. Pipeline
-# 6. Fit & Predict
-# 7. Results
-
-# 1. Load CSV
-# __________________________
-df = csvToDF("bitfinex_tBTCUSD_1m.csv", dropna=False)
-    # (optional) Convert datetime to timestamp
-    #inputX = datetimeToTimestamp(input=inputX, Date=inputX['Date'], Time=inputX['Time'], Format='%Y-%m-%d %H:%M:%S')
-# 2. Prepare X
-# __________________________
-X = df[["Open", "Low", "High", "Close", "Volume"]]
-# 3. Prepare target
-# __________________________
-target = generateTarget(df, method="Classification", typeRegression="Difference", intervalPeriods=1)
-# 4. Train test split
-# __________________________
-X_train, X_test, y_train, y_test = train_test_split(X, target, test_size=0.2, train_size=0.8, shuffle=False, random_state = 42)
-
-# 5. Start the pipeline
-# __________________________
-pipeline = Pipeline(steps=[
-  ('BitcoinTransformer', BitcoinTransformer(sma_close_timeperiod=3,
-                                         so_n=14,
-                                         so_d_n=3)
-   ),
-  ('imputing',SimpleImputer(missing_values=np.nan, strategy='mean')),
-  ('classify', RandomForestClassifier(n_estimators=10, random_state=42))
-])
-
-# 6. Fit & Predict the pipeline
-# __________________________
-pipeline.fit(X_train, y_train)
-y_predict = pipeline.predict(X_test)
-
-# 7. Scores
-# __________________________
-print('-------------  Real Random Forest Model ------------- ')
-print('Accuracy score:')
-print(round(accuracy_score(y_test, y_predict)  * 100, 2))
-print('Conf matrix:')
-print(confusion_matrix(y_test, y_predict))
-print('Classification report:')
-print(classification_report(y_test, y_predict))
