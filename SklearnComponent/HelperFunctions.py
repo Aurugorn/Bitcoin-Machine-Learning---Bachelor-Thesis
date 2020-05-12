@@ -1,6 +1,10 @@
+import autosklearn
 from BitcoinComponent import BitcoinTransformer
+from BitcoinComponent import ParameterRelationsBTCTrans
+from BitcoinComponent_AutoSk import BitcoinTransformer_AutoSk
 import pandas as pd
 import numpy as np
+import ta
 import time
 from datetime import datetime
 
@@ -10,6 +14,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 
+# auto sklearn
+import autosklearn.classification as classifier
 # Set Variables
 CSV_Path = "../inputs/bitfinex_tBTCUSD_1h.csv"
 
@@ -31,12 +37,13 @@ def csvToDF(input="", dropna=True, timeOutput=False):
     df = pd.read_csv(input, encoding="ISO-8859-1")
     if dropna:
         # Clean NaN values
-        # df = ta.utils.dropna(df)
-        df = df.dropna(how='any')
+        df = ta.utils.dropna(df)
+
     df.index.names = ['index']
     if timeOutput:
         end_time = time.time()
         print('Input read, took ' + str(end_time - start_time) + ' seconds')
+    df = df.reset_index()
     return df
 
 
@@ -141,7 +148,8 @@ def generateTarget(df="", method="Classification", typeRegression="Difference", 
 
 # 1. Load CSV
 # __________________________
-df = csvToDF(CSV_Path, dropna=False)
+df = csvToDF(CSV_Path, dropna=False, timeOutput=True)
+
 # (optional) Convert datetime to timestamp
 # inputX = datetimeToTimestamp(input=inputX, Date=inputX['Date'], Time=inputX['Time'], Format='%Y-%m-%d %H:%M:%S')
 # 2. Prepare X
@@ -152,23 +160,50 @@ X = df[["Open", "Low", "High", "Close", "Volume"]]
 target = generateTarget(df, method="Classification", typeRegression="Difference", intervalPeriods=1)
 # 4. Train test split
 # __________________________
+# Add LDA component to auto-sklearn.
+autosklearn.pipeline.components.feature_preprocessing.add_preprocessor(BitcoinTransformer_AutoSk)
+
 X_train, X_test, y_train, y_test = train_test_split(X, target, test_size=0.2, train_size=0.8, shuffle=False,
                                                     random_state=42)
-
+# Configuration space.
+cs = BitcoinTransformer_AutoSk.get_hyperparameter_search_space()
+print(cs)
 # 5. Start the pipeline
 # __________________________
+'''
+
 pipeline = Pipeline(steps=[
-    ('BitcoinTransformer', BitcoinTransformer(sma_close_timeperiod=3,
-                                              so_n=14,
-                                              so_d_n=3)
+    ('BitcoinTransformer', ParameterRelationsBTCTrans()
      ),
     ('imputing', SimpleImputer(missing_values=np.nan, strategy='mean')),
     ('classify', RandomForestClassifier(n_estimators=10, random_state=42))
 ])
+'''
+'''
+pipeline = Pipeline(steps=[
+    ('BitcoinTransformerWithRelationparameters', ParameterRelationsBTCTrans()),
+    ('imputing', SimpleImputer(missing_values=np.nan, strategy='mean')),
+    ('classify', classifier.AutoSklearnClassifier(time_left_for_this_task=360, per_run_time_limit=180,include_estimators=["random_forest"]))
+])
+'''
+'''
+include_estimators=["random_forest", ], exclude_estimators=None,
+include_preprocessors=["no_preprocessing", ], exclude_preprocessors=None
 
+automlclassifier = classifier.AutoSklearnClassifier(time_left_for_this_task=120, per_run_time_limit=60)
+automlclassifier_ = automlclassifier.fit(X_train, y_train)
+'''
+pipeline = classifier.AutoSklearnClassifier(
+time_left_for_this_task=360, per_run_time_limit=180,
+        include_preprocessors=['BitcoinTransformer_AutoSk'],
+    )
 # 6. Fit & Predict the pipeline
 # __________________________
+
 pipeline.fit(X_train, y_train)
+'''
+print(automlclassifier_)
+'''
 y_predict = pipeline.predict(X_test)
 
 # 7. Scores
@@ -180,3 +215,9 @@ print('Conf matrix:')
 print(confusion_matrix(y_test, y_predict))
 print('Classification report:')
 print(classification_report(y_test, y_predict))
+
+print(pipeline.sprint_statistics())
+print(pipeline.show_models())
+
+print(pipeline.named_steps['classify'].sprint_statistics())
+print(pipeline.named_steps['classify'].show_models())

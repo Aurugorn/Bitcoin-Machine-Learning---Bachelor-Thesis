@@ -1,18 +1,21 @@
-# Authors: Stan van der Avoird <stan@restica.nl>
-#
+from ConfigSpace.configuration_space import ConfigurationSpace
+from ConfigSpace.hyperparameters import UniformFloatHyperparameter, \
+    UniformIntegerHyperparameter, CategoricalHyperparameter
+from ConfigSpace.conditions import InCondition
 
+import sklearn.metrics
+import autosklearn.classification
+import autosklearn.pipeline.components.feature_preprocessing
+from autosklearn.pipeline.components.base \
+    import AutoSklearnPreprocessingAlgorithm
+from autosklearn.pipeline.constants import DENSE, SIGNED_DATA, \
+    UNSIGNED_DATA
+from autosklearn.util.common import check_none
 import ta
 import talib
-from sklearn.base import BaseEstimator, TransformerMixin
 
-# ------------------------------------- BitcoinTransformer component -------------------------------------#
-class BitcoinTransformer(BaseEstimator, TransformerMixin):
-    """
-    Bitcoin Transformer to prepare dataset for machine learning
-    Accepts dataset with 4 case sensitive columns; "Open", "Low", "High", "Close"
-    Accepts optional extra case sensitive column to calculate volume related technical indicators; "Volume"
-    And calculates Technical Indicators.
-    """
+# Create BitcoinTransformer_AutoSk component for auto-sklearn.
+class BitcoinTransformer_AutoSk(AutoSklearnPreprocessingAlgorithm):
     def __init__(self,
                  sma_close_timeperiod=3,
                  so_n=14,
@@ -83,8 +86,10 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
                  ultosc_period2=14,
                  ultosc_period3=28,
                  adosc_fastperiod=3,
-                 adosc_slowperiod=10
-                 ):
+                 adosc_slowperiod=10,
+                 random_state=None):
+
+
         '''
         @param sma_close_timeperiod:
         @type sma_close_timeperiod:
@@ -300,31 +305,11 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.adosc_fastperiod = adosc_fastperiod
         self.adosc_slowperiod = adosc_slowperiod
 
-    def _validate_input(self, X):
-        if 'Open' not in X:
-            raise ValueError("Missing column 'Open'. Make sure to rename your dataframe colums when needed.")
-        if 'Low' not in X:
-            raise ValueError("Missing column 'Low'. Make sure to rename your dataframe colums when needed.")
-        if 'High' not in X:
-            raise ValueError("Missing column 'High'. Make sure to rename your dataframe colums when needed.")
-        if 'Close' not in X:
-            raise ValueError("Missing column 'Close'. Make sure to rename your dataframe colums when needed.")
-        if 'Volume' not in X:
-            print(
-                "Warning: 'Volume' column not found. Column is optional but might have a positive effect on the performance of the models.")
-            self.useVolume = False
-        return X
+        self.random_state = random_state
+        self.preprocessor = None
 
     def fit(self, X, y=None):
-        """
-        Function to train the dataset. After fitting the model can be used to make predictions, usually with a .predict() method call.
-        @param X: Training set
-        @type X: numpy array of shape [n_samples, n_features]
-        @param y: Target values.
-        @type y: numpy array of shape [n_samples]
-        @return: Trained set
-        @rtype: self
-        """
+
         return self
 
     def transform(self, X):
@@ -385,8 +370,8 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         '''
         if self.useVolume:
             ADI = ta.volume.AccDistIndexIndicator(high=X["High"], low=X["Low"], close=X["Close"],
-                                              volume=X["Volume"],
-                                              fillna=False)
+                                                  volume=X["Volume"],
+                                                  fillna=False)
             X['ADI'] = ADI.acc_dist_index()
 
         # Moving Average Convergence Divergence (MACD)
@@ -416,7 +401,8 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         High positive readings indicate that prices are well above their average, which is a show of strength. 
         Low negative readings indicate that prices are well below their average, which is a show of weakness.
         '''
-        indicator_bb = ta.volatility.BollingerBands(close=X["Close"], n=self.bb_periods, ndev=self.bb_n_factor_standard_dev,
+        indicator_bb = ta.volatility.BollingerBands(close=X["Close"], n=self.bb_periods,
+                                                    ndev=self.bb_n_factor_standard_dev,
                                                     fillna=False)
         # Add Bollinger Bands features
         # X['bb_bbm'] = indicator_bb.bollinger_mavg()
@@ -488,10 +474,14 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         # SAR - Parabolic SAR
         X['SAR'] = talib.SAR(X["High"], X["Low"], acceleration=self.sar_acceleration, maximum=self.sar_maximum)
         # SAREXT - Parabolic SAR - Extended
-        X['SAREXT'] = talib.SAREXT(X["High"], X["Low"], startvalue=self.sarext_startvalue, offsetonreverse=self.sarext_offsetonreverse,
+        X['SAREXT'] = talib.SAREXT(X["High"], X["Low"], startvalue=self.sarext_startvalue,
+                                   offsetonreverse=self.sarext_offsetonreverse,
                                    accelerationinitlong=self.sarext_accelerationinitlong,
-                                   accelerationlong=self.sarext_accelerationlong, accelerationmaxlong=self.sarext_accelerationmaxlong, accelerationinitshort=self.sarext_accelerationinitshort,
-                                   accelerationshort=self.sarext_accelerationshort, accelerationmaxshort=self.sarext_accelerationmaxshort)
+                                   accelerationlong=self.sarext_accelerationlong,
+                                   accelerationmaxlong=self.sarext_accelerationmaxlong,
+                                   accelerationinitshort=self.sarext_accelerationinitshort,
+                                   accelerationshort=self.sarext_accelerationshort,
+                                   accelerationmaxshort=self.sarext_accelerationmaxshort)
         # T3 - Triple Exponential Moving Average (T3)
         X['T3'] = talib.T3(X["Close"], timeperiod=self.t3_period, vfactor=self.t3_vfactor)
         # TEMA - Triple Exponential Moving Average
@@ -507,7 +497,8 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         # ADXR - Average Directional Movement Index Rating
         X['ADXR'] = talib.ADXR(X["High"], X["Low"], X["Close"], timeperiod=self.adxr_period)
         # APO - Absolute Price Oscillator
-        X['APO'] = talib.APO(X["Close"], fastperiod=self.apo_fastperiod, slowperiod=self.apo_slowperiod, matype=self.apo_matype)
+        X['APO'] = talib.APO(X["Close"], fastperiod=self.apo_fastperiod, slowperiod=self.apo_slowperiod,
+                             matype=self.apo_matype)
         # AROON - Aroon
         X['aroondown'], X['aroonup'] = talib.AROON(X["High"], X["Low"], timeperiod=self.aroon_period)
         # AROONOSC - Aroon Oscillator
@@ -530,7 +521,8 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         # PLUS_DM - Plus Directional Movement
         X['PLUS_DM'] = talib.PLUS_DM(X["High"], X["Low"], timeperiod=self.plus_dm_period)
         # PPO - Percentage Price Oscillator
-        X['PPO'] = talib.PPO(X["Close"], fastperiod=self.ppo_fastperiod, slowperiod=self.ppo_slowperiod, matype=self.ppo_matype)
+        X['PPO'] = talib.PPO(X["Close"], fastperiod=self.ppo_fastperiod, slowperiod=self.ppo_slowperiod,
+                             matype=self.ppo_matype)
         # ROCP - Rate of change Percentage: (price-prevPrice)/prevPrice
         X['ROCP'] = talib.ROCP(X["Close"], timeperiod=self.rocp_period)
         # ROCR - Rate of change ratio: (price/prevPrice)
@@ -581,179 +573,33 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         '''
         return X
 
-# Class to combine several parameters from the BitcoinTransformer to reduce the amount of total combination of parameters
-class ParameterRelationsBTCTrans(BitcoinTransformer):
-    """
-    Child of BitcoinTransformer to combine several technical indicator hyper parameters to reduce the
-    total amount of hyperparameters exposed to (auto) sklearn.
-    This child combines matching default values of the parameters.
-    """
-    def __init__(self,
-                 fastperiod = 3,
-                 longterm = 26,
-                 midterm = 14,
-                 shortterm = 12,
-                 bb_cci = 20,
-                 var_t3 = 5,
-                 default_1 = 1,
-                 dema_trema = 30,
-                 zero = 0,
-                 rocperiod = 10):
-        self.fastperiod = fastperiod
-        self.longterm = longterm
-        self.midterm = midterm
-        self.shortterm = shortterm
-        self.bb_cci = bb_cci
-        self.var_t3 = var_t3
-        self.default_1 = default_1
-        self.dema_trema = dema_trema
-        self.zero = zero
-        self.rocperiod = rocperiod
+    @staticmethod
+    def get_properties(dataset_properties=None):
+        return {'shortname': 'BitcoinTransformer_AutoSk',
+                'name': 'BitcoinTransformer for Auto Sk Learn',
+                'handles_regression': False,
+                'handles_classification': True,
+                'handles_multiclass': False,
+                'handles_multilabel': False,
+                'is_deterministic': True,
+                'input': (DENSE, UNSIGNED_DATA, SIGNED_DATA),
+                'output': (DENSE, UNSIGNED_DATA, SIGNED_DATA)}
 
-        BitcoinTransformer.__init__(self, sma_close_timeperiod=self.fastperiod, so_d_n=self.fastperiod, momentum_period=self.fastperiod, mean_o_c_period=self.fastperiod, sma_high_period=self.fastperiod, sma_low_period=self.fastperiod , sma_handl_period=self.fastperiod, sma_h_l_c_o_period=self.fastperiod, adosc_fastperiod=self.fastperiod,
-                                    macd_period_longterm=self.longterm, apo_slowperiod=self.longterm, ppo_slowperiod=self.longterm,
-                                    so_n=self.midterm,
-                                    wr_lookback_period=self.midterm,
-                                    midpoint_period=self.midterm,
-                                    midprice_period=self.midterm,
-                                    adx_period=self.midterm,
-                                    adxr_period=self.midterm,
-                                    aroon_period=self.midterm,
-                                    aroonosc_period=self.midterm,
-                                    cmo_period=self.midterm,
-                                    dx_period=self.midterm,
-                                    mfi_period=self.midterm,
-                                    minus_di_period=self.midterm,
-                                    minus_dm_period=self.midterm,
-                                    plus_di_period=self.midterm,
-                                    plus_dm_period=self.midterm,
-                                    rsi_period=self.midterm,
-                                    ultosc_period2=self.midterm,
-                                    roc_period=self.shortterm,
-                                    macd_period_shortterm=self.shortterm,
-                                    apo_fastperiod=self.shortterm,
-                                    ppo_fastperiod=self.shortterm,
-                                    cci_periods=self.bb_cci,
-                                    bb_periods=self.bb_cci,
-                                    var_close_period=self.var_t3,
-                                    var_open_period=self.var_t3,
-                                    t3_period=self.var_t3,
-                                    var_close_nbdev=self.default_1,
-                                    var_open_nbdev=self.default_1,
+    @staticmethod
+    def get_hyperparameter_search_space(dataset_properties=None):
+        cs = ConfigurationSpace()
 
-                                    dema_period=self.dema_trema,
-                                    ema_period=self.dema_trema,
-                                    kama_period=self.dema_trema,
-                                    ma_period=self.dema_trema,
-                                    tema_period=self.dema_trema,
-                                    trima_period=self.dema_trema,
-                                    wma_period=self.dema_trema,
-                                    trix_period=self.dema_trema,
+        # base_estimator = Constant(name="base_estimator", value="None")
+        sma_close_timeperiod = cs.add_hyperparameter(UniformIntegerHyperparameter(
+            name="sma_close_timeperiod",lower=1, upper=100,))
+        so_n = cs.add_hyperparameter(UniformFloatHyperparameter(
+            name="so_n", lower=1, upper=100))
 
-                                    sar_acceleration=self.zero,
-                                    sar_maximum=self.zero,
-                                    sarext_startvalue=self.zero,
-                                    sarext_offsetonreverse=self.zero,
-                                    sarext_accelerationinitlong=self.zero,
-                                    sarext_accelerationlong=self.zero,
-                                    sarext_accelerationmaxlong=self.zero,
-                                    sarext_accelerationinitshort=self.zero,
-                                    sarext_accelerationshort=self.zero,
-                                    sarext_accelerationmaxshort=self.zero,
-                                    t3_vfactor=self.zero,
-                                    apo_matype=self.zero,
-                                    ppo_matype=self.zero,
-
-                                    rocp_period=self.rocperiod,
-                                    rocr_period=self.rocperiod,
-                                    rocr100_period=self.rocperiod,
-                                    adosc_slowperiod=self.rocperiod
-                                    )
-        '''
-        sma_close_timeperiod=3,
-        so_d_n=3,          
-        momentum_period=3,
-        mean_o_c_period=3,
-        sma_high_period=3,
-        sma_low_period=3,
-        sma_handl_period=3,
-        sma_h_l_c_o_period=3,
-        adosc_fastperiod=3,
-        
-        so_n=14,
-        wr_lookback_period=14,
-        midpoint_period=14,
-        midprice_period=14,
-        adx_period=14,
-        adxr_period=14,
-        aroon_period=14,
-        aroonosc_period=14,
-        cmo_period=14,
-        dx_period=14,
-        mfi_period=14,
-        minus_di_period=14,
-        minus_dm_period=14,
-        plus_di_period=14,
-        plus_dm_period=14,
-        rsi_period=14,
-        ultosc_period2=14,
-        
-        roc_period=12,
-        macd_period_shortterm=12,
-        apo_fastperiod=12,
-        ppo_fastperiod=12,
-        
-        macd_period_longterm=26,
-        apo_slowperiod=26,
-        ppo_slowperiod=26,
-        
-        macd_period_to_signal=9,
-        
-        cci_periods=20,
-        bb_periods=20,
-        
-        cci_constant=0.015,
-        
-        bb_n_factor_standard_dev=2,
-        
-        var_close_period=5,
-        var_open_period=5,
-        t3_period=5,
-        
-        var_close_nbdev=1,
-        var_open_nbdev=1,
-        
-        dema_period=30,
-        ema_period=30,
-        kama_period=30,
-        ma_period=30,
-        tema_period=30,
-        trima_period=30,
-        wma_period=30,
-        trix_period=30,
-        
-        sar_acceleration=0,
-        sar_maximum=0,
-        sarext_startvalue=0,
-        sarext_offsetonreverse=0,
-        sarext_accelerationinitlong=0,
-        sarext_accelerationlong=0,
-        sarext_accelerationmaxlong=0,
-        sarext_accelerationinitshort=0,
-        sarext_accelerationshort=0,
-        sarext_accelerationmaxshort=0,
-        t3_vfactor=0,
-        apo_matype=0,
-        ppo_matype=0,
-        
-        rocp_period=10,
-        rocr_period=10,
-        rocr100_period=10,
-        adosc_slowperiod=10
-        
-        ultosc_period1=7,
-        
-        ultosc_period3=28,
-        
 
         '''
+         self.sma_close_timeperiod = sma_close_timeperiod
+        self.so_n = so_n
+        self.so_d_n = so_d_n
+        self.momentum_period = momentum_period
+        '''
+        return cs

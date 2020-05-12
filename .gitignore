@@ -1,7 +1,7 @@
 
 venv/
 
-bitfinex_tBTCUSD_1m.csv
+inputs/bitfinex_tBTCUSD_1m.csv
 
 *.csv
 
