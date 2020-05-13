@@ -301,6 +301,9 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.adosc_slowperiod = adosc_slowperiod
 
     def _validate_input(self, X):
+        # Prints weirdly transformed data array, still same number of columns but column headers are gone and values are changed.
+        print(X) # <-- Dit is de screenshot dataset, maar deze dataset is misvormd dus kan mijn BitcoinComponent niet meer de input validaten
+                # en ook niet alle technical indicators berekenen?
         if 'Open' not in X:
             raise ValueError("Missing column 'Open'. Make sure to rename your dataframe colums when needed.")
         if 'Low' not in X:
@@ -328,12 +331,14 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
+
         """
         @param X: Training set
         @type X: numpy array of shape [n_samples, n_features]
         @return: Transformed array.
         @rtype: X_newnumpy array of shape [n_samples, n_features_new]
         """
+
         X = self._validate_input(X)
         X = X.copy()
         # Simple Moving Average (SMA)
@@ -383,6 +388,7 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         a volume-based indicator designed to measure the cumulative flow of money into and out of a security
         The Accumulation Distribution Line rises when the multiplier is positive and falls when the multiplier is negative.
         '''
+
         if self.useVolume:
             ADI = ta.volume.AccDistIndexIndicator(high=X["High"], low=X["Low"], close=X["Close"],
                                               volume=X["Volume"],
@@ -579,6 +585,8 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         # Delete rows that contain at least one NaN
         X = X.dropna()
         '''
+        print("After:")
+        print(X)
         return X
 
 # Class to combine several parameters from the BitcoinTransformer to reduce the amount of total combination of parameters

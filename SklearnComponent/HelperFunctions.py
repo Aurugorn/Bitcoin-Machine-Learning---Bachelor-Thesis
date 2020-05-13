@@ -170,6 +170,7 @@ cs = BitcoinTransformer_AutoSk.get_hyperparameter_search_space()
 print(cs)
 # 5. Start the pipeline
 # __________________________
+
 '''
 
 pipeline = Pipeline(steps=[
@@ -193,10 +194,15 @@ include_preprocessors=["no_preprocessing", ], exclude_preprocessors=None
 automlclassifier = classifier.AutoSklearnClassifier(time_left_for_this_task=120, per_run_time_limit=60)
 automlclassifier_ = automlclassifier.fit(X_train, y_train)
 '''
+#Prints expected dataset with columns "Open","High","Low"... etc.
+print(X)
 pipeline = classifier.AutoSklearnClassifier(
-time_left_for_this_task=360, per_run_time_limit=180,
-        include_preprocessors=['BitcoinTransformer_AutoSk'],
-    )
+time_left_for_this_task=30, per_run_time_limit=5
+    ,include_estimators=["random_forest"]
+    ,ml_memory_limit=6000
+        ,include_preprocessors=['BitcoinTransformer_AutoSk',]
+)
+
 # 6. Fit & Predict the pipeline
 # __________________________
 
@@ -218,6 +224,6 @@ print(classification_report(y_test, y_predict))
 
 print(pipeline.sprint_statistics())
 print(pipeline.show_models())
-
+print(pipeline.cv_results_)
 print(pipeline.named_steps['classify'].sprint_statistics())
 print(pipeline.named_steps['classify'].show_models())
