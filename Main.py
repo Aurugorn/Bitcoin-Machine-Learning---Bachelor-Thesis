@@ -15,15 +15,15 @@ import time
 from sklearn.linear_model import LogisticRegression
 
 # Configuration
-LOAD_CSV = "inputs/BTCUSD_1Day.csv"
-CREATE_TIMESTAMP = True
+LOAD_CSV = "inputs/bitfinex_tBTCUSD_1m.csv"
+CREATE_TIMESTAMP = False
 CREATE_INDICATORS = True
-TYPE_MACHINE_LEARNING = "Regression" #Classification or Regression
+TYPE_MACHINE_LEARNING = "Classification" #Classification or Regression
 TYPE_REGRESSION = "Difference" #Difference or Percentage or Target (value of tomorrow) Only applies to TYPE_MACHINE_LEARNING = 'Regression'
 INTERVAL_PERIOD = 1 #How much intervals do we need to look in the future? 1 = next
 EXPORT = "CSV" #Options: EXCEL , CSV , NONE
 EXPORT_NAME_EXCEL = "output_TestData.xlsx"
-EXPORT_NAME_CSV = "outputsRegression/justATest2.csv"
+EXPORT_NAME_CSV = "outputs/23062020_Classification_1MIN_ALLTI.csv"
 
 # Read data from file 'filename.csv' 
 # (in the same directory that your python process is based)
@@ -56,15 +56,16 @@ if CREATE_TIMESTAMP:
 # Start initializing technical indicators
 if CREATE_INDICATORS:
     print('Calculating Technical Indicators...')
-    start_time = time.time()
+    start_time_allTI = time.time()
     # Simple Moving Average (SMA) 
     '''
     Description:
     iloc is primarily integer position based (from 0 to length-1 of the axis), but may also be used with a boolean array.
     '''
-    period = 3
+    period = 30
     df['SMA_Close'] = talib.SMA(df["Close"], timeperiod=period)
-    
+    print('Time #1 batch TI: ' + str(time.time() - start_time) + ' seconds')
+    start_time = time.time()
     # Stochastic Oscillator (SO)
     period = 14
     sma_period = 3
@@ -74,8 +75,8 @@ if CREATE_INDICATORS:
     # Momentum (M)
     period = 3
     df['Momentum'] = talib.MOM(df["Close"], timeperiod=period)
-    
-    
+
+
     # Price Rate Of Change (ROC)
     '''
     Description:
@@ -109,8 +110,8 @@ if CREATE_INDICATORS:
     '''
     ADI = ta.volume.AccDistIndexIndicator(high=df["High"], low=df["Low"], close=df["Close"], volume=df["Volume"], fillna=False)
     df['ADI'] = ADI.acc_dist_index()
-    
-    
+
+
     # Moving Average Convergence Divergence (MACD)
     '''
     Description:
@@ -121,8 +122,9 @@ if CREATE_INDICATORS:
     period_to_signal = 9
     MACD = ta.trend.MACD(close=df["Close"], n_slow=period_longterm, n_fast=period_shortterm, n_sign=period_to_signal, fillna=False)
     df['MACD'] = MACD.macd()
-    
-    
+
+    print('Time #2 batch TI: ' + str(time.time() - start_time) + ' seconds')
+    start_time = time.time()
     # Commodity Channel Index (CCI)
     '''
     Description:
@@ -132,9 +134,9 @@ if CREATE_INDICATORS:
     '''
     periods = 20
     constant = 0.015
-    CCI = ta.trend.cci(high=df["High"], low=df["Low"], close=df["Close"], n=periods, c=constant, fillna=False)
-    df['CCI'] = CCI
-    
+    #CCI = ta.trend.cci(high=df["High"], low=df["Low"], close=df["Close"], n=periods, c=constant, fillna=False)
+    #df['CCI'] = CCI
+
     # Bollinger Bands (BB)
     '''
     Description:
@@ -158,7 +160,8 @@ if CREATE_INDICATORS:
     
     # Add width size Bollinger Bands
     df['bb_bbw'] = indicator_bb.bollinger_wband()
-    
+    print('Time #3 batch TI: ' + str(time.time() - start_time) + ' seconds')
+    start_time = time.time()
     # Mean Open & Close (M_O, M_C)
     period=3
     df['MEAN_O_C'] = (talib.SMA(df["Open"], timeperiod=period) / 2) + (talib.SMA(df["Close"], timeperiod=period) / 2)
@@ -183,7 +186,8 @@ if CREATE_INDICATORS:
     '''
     period=3
     df['SMA_Low'] = talib.SMA(df["Low"], timeperiod=period)
-    
+    print('Time #4 batch TI: ' + str(time.time() - start_time) + ' seconds')
+    start_time = time.time()
     # High, Low Average
     '''
     Description:
@@ -216,6 +220,8 @@ if CREATE_INDICATORS:
     df['KAMA'] = talib.KAMA(df["Close"], timeperiod=period)
     # MA - Moving average
     period=30
+    print('Time #5 batch TI: ' + str(time.time() - start_time) + ' seconds')
+    start_time = time.time()
     df['MA'] = talib.MA(df["Close"], timeperiod=period, matype=0)
     # MIDPOINT - MidPoint over period
     period=14
@@ -247,6 +253,8 @@ if CREATE_INDICATORS:
     # ADXR - Average Directional Movement Index Rating
     period=14
     df['ADXR'] = talib.ADXR(df["High"], df["Low"], df["Close"], timeperiod=period)
+    print('Time #6 batch TI: ' + str(time.time() - start_time) + ' seconds')
+    start_time = time.time()
     # APO - Absolute Price Oscillator
     df['APO'] = talib.APO(df["Close"], fastperiod=12, slowperiod=26, matype=0)
     # AROON - Aroon
@@ -271,6 +279,8 @@ if CREATE_INDICATORS:
     df['PLUS_DI'] = talib.PLUS_DI(df["High"], df["Low"], df["Close"], timeperiod=14)
     # PLUS_DM - Plus Directional Movement
     df['PLUS_DM'] = talib.PLUS_DM(df["High"], df["Low"], timeperiod=14)
+    print('Time #7 batch TI: ' + str(time.time() - start_time) + ' seconds')
+    start_time = time.time()
     # PPO - Percentage Price Oscillator
     df['PPO'] = talib.PPO(df["Close"], fastperiod=12, slowperiod=26, matype=0)
     # ROCP - Rate of change Percentage: (price-prevPrice)/prevPrice
@@ -293,14 +303,18 @@ if CREATE_INDICATORS:
     df['ADOSC'] = talib.ADOSC(df["High"], df["Low"], df["Close"], df["Volume"], fastperiod=3, slowperiod=10)
     # OBV - On Balance Volume
     df['OBV'] = talib.OBV(df["Close"], df["Volume"])
-    
+    print('Time #8 batch TI: ' + str(time.time() - start_time) + ' seconds')
+    start_time = time.time()
     # ######################## Cycle Indicators ############################
     # HT_DCPERIOD - Hilbert Transform - Dominant Cycle Period
     df['HT_DCPERIOD'] = talib.HT_DCPERIOD(df["Close"])
     # HT_DCPHASE - Hilbert Transform - Dominant Cycle Phase
-    df['HT_DCPHASE'] = talib.HT_DCPHASE(df["Close"])
+
+    #df['HT_DCPHASE'] = talib.HT_DCPHASE(df["Close"])
+
     # HT_TRENDMODE - Hilbert Transform - Trend vs Cycle Mode
-    df['HT_TRENDMODE'] = talib.HT_TRENDMODE(df["Close"])
+    #df['HT_TRENDMODE'] = talib.HT_TRENDMODE(df["Close"])
+
     # ######################## Price transform functions ############################
     # AVGPRICE - Average Price
     df['AVGPRICE'] = talib.AVGPRICE(df["Open"], df["High"], df["Low"], df["Close"])
@@ -310,10 +324,11 @@ if CREATE_INDICATORS:
     df['TYPPRICE'] = talib.TYPPRICE(df["High"], df["Low"], df["Close"])
     # WCLPRICE - Weighted Close Price
     df['WCLPRICE'] = talib.WCLPRICE(df["High"], df["Low"], df["Close"])
-    
+
+    print('Time #9 batch TI: ' + str(time.time() - start_time) + ' seconds')
     # ################################ END OF TECHINCAL INDICATORS #########################
     end_time = time.time()
-    print('Time to create Technical Inidicators: ' + str(end_time - start_time) + ' seconds')
+    print('Time to create Technical Inidicators: ' + str(end_time - start_time_allTI) + ' seconds')
 
 print('Creating Target...')
 start_time = time.time()

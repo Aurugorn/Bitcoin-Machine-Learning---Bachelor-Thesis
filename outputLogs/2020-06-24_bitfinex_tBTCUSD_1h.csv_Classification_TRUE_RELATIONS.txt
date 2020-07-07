@@ -1,0 +1,58 @@
+RandomizedSearchCV took 159.02 seconds for 1 candidates parameter settings.Program Parameters:
+MachineLearningMethod = Classification
+typeRegression = Difference
+intervalPeriods = 1
+RunType = 2
+RandomizedSearchCV_Status = ON
+RandomizedSearchCV_n_iter_search = 1
+RandomForest_n_estimators = 100
+
+
+-------------  Output Classification ------------- 
+Accuracy score: 
+52.63
+              precision    recall  f1-score   support
+
+       False       0.52      0.48      0.50      6046
+        True       0.53      0.57      0.55      6190
+
+    accuracy                           0.53     12236
+   macro avg       0.53      0.53      0.53     12236
+weighted avg       0.53      0.53      0.53     12236
+
+
+Conf Matrix:
+[[2932 3114]
+ [2682 3508]]
+
+Best params:{"BitcoinTransformer__bb_cci": 8.65690044258776, "BitcoinTransformer__dema_trema": 82.46413065237454, "BitcoinTransformer__fastperiod": 35.04820223625628, "BitcoinTransformer__longterm": 20.80332735977462, "BitcoinTransformer__midterm": 3.682145841147736, "BitcoinTransformer__rocperiod": 3.6817984161105035, "BitcoinTransformer__shortterm": 2.5102230345947665, "BitcoinTransformer__var_t3": 59.243033176606986, "BitcoinTransformer__zero": 21.004210873488557}
+
+CV_Results:
+{'mean_fit_time': array([35.75769424]), 'std_fit_time': array([1.57615674]), 'mean_score_time': array([0.47633425]), 'std_score_time': array([0.0730444]), 'param_BitcoinTransformer__bb_cci': masked_array(data=[8.65690044258776],
+             mask=[False],
+       fill_value='?',
+            dtype=object), 'param_BitcoinTransformer__dema_trema': masked_array(data=[82.46413065237454],
+             mask=[False],
+       fill_value='?',
+            dtype=object), 'param_BitcoinTransformer__fastperiod': masked_array(data=[35.04820223625628],
+             mask=[False],
+       fill_value='?',
+            dtype=object), 'param_BitcoinTransformer__longterm': masked_array(data=[20.80332735977462],
+             mask=[False],
+       fill_value='?',
+            dtype=object), 'param_BitcoinTransformer__midterm': masked_array(data=[3.682145841147736],
+             mask=[False],
+       fill_value='?',
+            dtype=object), 'param_BitcoinTransformer__rocperiod': masked_array(data=[3.6817984161105035],
+             mask=[False],
+       fill_value='?',
+            dtype=object), 'param_BitcoinTransformer__shortterm': masked_array(data=[2.5102230345947665],
+             mask=[False],
+       fill_value='?',
+            dtype=object), 'param_BitcoinTransformer__var_t3': masked_array(data=[59.243033176606986],
+             mask=[False],
+       fill_value='?',
+            dtype=object), 'param_BitcoinTransformer__zero': masked_array(data=[21.004210873488557],
+             mask=[False],
+       fill_value='?',
+            dtype=object), 'params': [{'BitcoinTransformer__bb_cci': 8.65690044258776, 'BitcoinTransformer__dema_trema': 82.46413065237454, 'BitcoinTransformer__fastperiod': 35.04820223625628, 'BitcoinTransformer__longterm': 20.80332735977462, 'BitcoinTransformer__midterm': 3.682145841147736, 'BitcoinTransformer__rocperiod': 3.6817984161105035, 'BitcoinTransformer__shortterm': 2.5102230345947665, 'BitcoinTransformer__var_t3': 59.243033176606986, 'BitcoinTransformer__zero': 21.004210873488557}], 'split0_test_score': array([0.50793748]), 'split1_test_score': array([0.51124732]), 'split2_test_score': array([0.50576192]), 'mean_test_score': array([0.50831557]), 'std_test_score': array([0.00225531]), 'rank_test_score': array([1], dtype=int32)}

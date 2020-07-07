@@ -19,7 +19,17 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dea95144-c094-41f1-a67b-db2bb00269e8" name="Default Changelist" comment="" />
+    <list default="true" id="dea95144-c094-41f1-a67b-db2bb00269e8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/BitcoinMachineLearning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BitcoinMachineLearning.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MachineLearning.py" beforeDir="false" afterPath="$PROJECT_DIR$/MachineLearning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MachineLearning_Regression.py" beforeDir="false" afterPath="$PROJECT_DIR$/MachineLearning_Regression.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SklearnComponent/BitcoinComponent.py" beforeDir="false" afterPath="$PROJECT_DIR$/SklearnComponent/BitcoinComponent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SklearnComponent/BitcoinComponent_AutoSk.py" beforeDir="false" afterPath="$PROJECT_DIR$/SklearnComponent/BitcoinComponent_AutoSk.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SklearnComponent/HelperFunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/SklearnComponent/HelperFunctions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,58 +53,19 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/ta-lib" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/SklearnComponent" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/inputs" />
       <recent name="$PROJECT_DIR$/SklearnComponent" />
     </key>
   </component>
   <component name="RunManager" selected="Python.HelperFunctions">
-    <configuration name="BitcoinComponent" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="BitcoinMachineLearning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.6" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SklearnComponent/BitcoinComponent.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="BitcoinComponent_AutoSk" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="BitcoinMachineLearning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.6" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/SklearnComponent" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SklearnComponent/BitcoinComponent_AutoSk.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="HelperFunctions" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="BitcoinMachineLearning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -102,9 +73,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.6" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/SklearnComponent" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SklearnComponent/HelperFunctions.py" />
@@ -116,19 +87,82 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="UnitTests" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="MachineLearning" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="BitcoinMachineLearning" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.6" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/SklearnComponent" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SklearnComponent/UnitTests.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MachineLearning.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="MachineLearning_Regression" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="BitcoinMachineLearning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MachineLearning_Regression.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="BitcoinMachineLearning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="testArgs" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="BitcoinMachineLearning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/SklearnComponent" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SklearnComponent/testArgs.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -138,17 +172,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.BitcoinComponent" />
-      <item itemvalue="Python.BitcoinComponent_AutoSk" />
       <item itemvalue="Python.HelperFunctions" />
-      <item itemvalue="Python.UnitTests" />
+      <item itemvalue="Python.MachineLearning" />
+      <item itemvalue="Python.MachineLearning_Regression" />
+      <item itemvalue="Python.Main" />
+      <item itemvalue="Python.testArgs" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.HelperFunctions" />
-        <item itemvalue="Python.BitcoinComponent" />
-        <item itemvalue="Python.BitcoinComponent_AutoSk" />
-        <item itemvalue="Python.UnitTests" />
+        <item itemvalue="Python.testArgs" />
+        <item itemvalue="Python.MachineLearning" />
+        <item itemvalue="Python.Main" />
+        <item itemvalue="Python.MachineLearning_Regression" />
       </list>
     </recent_temporary>
   </component>
@@ -178,35 +214,61 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="451" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589317323788">
+    <state x="584" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1593789313816">
+      <screen x="67" y="27" width="2493" height="1053" />
+    </state>
+    <state x="451" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1592997303603" />
+    <state x="451" y="158" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.948@67.27.1853.948" timestamp="1590504719339" />
+    <state x="584" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.2493.1053@67.27.2493.1053" timestamp="1593789313816" />
+    <state x="465" y="311" width="374" height="484" key="FileChooserDialogImpl" timestamp="1592995652479">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="451" y="173" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1589317323788" />
-    <state x="451" y="158" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.948@67.27.1853.948" timestamp="1588161256743" />
-    <state width="1830" height="104" key="GridCell.Tab.0.bottom" timestamp="1589377613654">
+    <state x="465" y="311" width="374" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1592995652479" />
+    <state x="602" y="311" width="495" height="484" key="FileChooserDialogImpl/67.27.2493.1053@67.27.2493.1053" timestamp="1592327467559" />
+    <state width="1830" height="297" key="GridCell.Tab.0.bottom" timestamp="1593976945245">
       <screen x="67" y="27" width="1853" height="948" />
     </state>
-    <state width="1830" height="285" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1589377450067" />
-    <state width="1830" height="104" key="GridCell.Tab.0.bottom/67.27.1853.948@67.27.1853.948" timestamp="1589377613654" />
-    <state width="1830" height="104" key="GridCell.Tab.0.center" timestamp="1589377613653">
+    <state width="1830" height="312" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1593003177982" />
+    <state width="1830" height="297" key="GridCell.Tab.0.bottom/67.27.1853.948@67.27.1853.948" timestamp="1593976945245" />
+    <state width="2470" height="341" key="GridCell.Tab.0.bottom/67.27.2493.1053@67.27.2493.1053" timestamp="1592398765004" />
+    <state width="2470" height="466" key="GridCell.Tab.0.bottom/67.27.2493.948@67.27.2493.948" timestamp="1590531451646" />
+    <state width="1830" height="297" key="GridCell.Tab.0.center" timestamp="1593976945244">
       <screen x="67" y="27" width="1853" height="948" />
     </state>
-    <state width="1830" height="285" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1589377450066" />
-    <state width="1830" height="104" key="GridCell.Tab.0.center/67.27.1853.948@67.27.1853.948" timestamp="1589377613653" />
-    <state width="1830" height="104" key="GridCell.Tab.0.left" timestamp="1589377613653">
+    <state width="1830" height="312" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1593003177981" />
+    <state width="1830" height="297" key="GridCell.Tab.0.center/67.27.1853.948@67.27.1853.948" timestamp="1593976945244" />
+    <state width="2470" height="341" key="GridCell.Tab.0.center/67.27.2493.1053@67.27.2493.1053" timestamp="1592398765003" />
+    <state width="2470" height="466" key="GridCell.Tab.0.center/67.27.2493.948@67.27.2493.948" timestamp="1590531451645" />
+    <state width="1830" height="297" key="GridCell.Tab.0.left" timestamp="1593976945243">
       <screen x="67" y="27" width="1853" height="948" />
     </state>
-    <state width="1830" height="285" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1589377450065" />
-    <state width="1830" height="104" key="GridCell.Tab.0.left/67.27.1853.948@67.27.1853.948" timestamp="1589377613653" />
-    <state width="1830" height="104" key="GridCell.Tab.0.right" timestamp="1589377613654">
+    <state width="1830" height="312" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1593003177980" />
+    <state width="1830" height="297" key="GridCell.Tab.0.left/67.27.1853.948@67.27.1853.948" timestamp="1593976945243" />
+    <state width="2470" height="341" key="GridCell.Tab.0.left/67.27.2493.1053@67.27.2493.1053" timestamp="1592398765002" />
+    <state width="2470" height="466" key="GridCell.Tab.0.left/67.27.2493.948@67.27.2493.948" timestamp="1590531451644" />
+    <state width="1830" height="297" key="GridCell.Tab.0.right" timestamp="1593976945244">
       <screen x="67" y="27" width="1853" height="948" />
     </state>
-    <state width="1830" height="285" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1589377450066" />
-    <state width="1830" height="104" key="GridCell.Tab.0.right/67.27.1853.948@67.27.1853.948" timestamp="1589377613654" />
-    <state x="482" y="187" key="SettingsEditor" timestamp="1589317340960">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state width="1830" height="312" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1593003177981" />
+    <state width="1830" height="297" key="GridCell.Tab.0.right/67.27.1853.948@67.27.1853.948" timestamp="1593976945244" />
+    <state width="2470" height="341" key="GridCell.Tab.0.right/67.27.2493.1053@67.27.2493.1053" timestamp="1592398765003" />
+    <state width="2470" height="466" key="GridCell.Tab.0.right/67.27.2493.948@67.27.2493.948" timestamp="1590531451646" />
+    <state x="482" y="171" key="SettingsEditor" timestamp="1593073446027">
+      <screen x="67" y="27" width="1853" height="948" />
     </state>
-    <state x="482" y="187" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1589317340960" />
+    <state x="482" y="187" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1592995987773" />
+    <state x="482" y="171" key="SettingsEditor/67.27.1853.948@67.27.1853.948" timestamp="1593073446027" />
+    <state x="625" y="187" key="SettingsEditor/67.27.2493.1053@67.27.2493.1053" timestamp="1592327469911" />
+    <state x="1005" y="467" width="448" height="170" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1592338355018">
+      <screen x="67" y="27" width="2493" height="1053" />
+    </state>
+    <state x="764" y="467" width="448" height="170" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.27.1853.1053@67.27.1853.1053" timestamp="1591017511652" />
+    <state x="1005" y="467" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.27.2493.1053@67.27.2493.1053" timestamp="1592338355018" />
+    <state x="897" y="117" width="836" height="870" key="find.popup" timestamp="1592383137816">
+      <screen x="67" y="27" width="2493" height="1053" />
+    </state>
+    <state x="684" y="108" width="621" height="783" key="find.popup/67.27.1853.948@67.27.1853.948" timestamp="1591189275024" />
+    <state x="897" y="117" width="836" height="870" key="find.popup/67.27.2493.1053@67.27.2493.1053" timestamp="1592383137816" />
     <state x="656" y="257" width="672" height="678" key="search.everywhere.popup" timestamp="1589377407120">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>

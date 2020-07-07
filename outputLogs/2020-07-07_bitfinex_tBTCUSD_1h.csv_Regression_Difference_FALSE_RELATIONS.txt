@@ -1,0 +1,29 @@
+RandomizedSearchCV took 37.45 seconds for 1 candidates parameter settings.Program Parameters:
+MachineLearningMethod = Regression
+typeRegression = Difference
+intervalPeriods = 1
+RunType = 1
+RandomizedSearchCV_Status = ON
+RandomizedSearchCV_n_iter_search = 1
+RandomForest_n_estimators = 10
+
+
+-------------  Output Regression ------------- 
+Mean Absolute Error:56.485812724710286
+Mean Squared Error:8867.974909938794
+Root Mean Squared Error:94.16992571908929
+Model Score:0.787611916219254RandomizedSearchCV took 336.85 seconds for 1 candidates parameter settings.Program Parameters:
+MachineLearningMethod = Regression
+typeRegression = Difference
+intervalPeriods = 1
+RunType = 1
+RandomizedSearchCV_Status = ON
+RandomizedSearchCV_n_iter_search = 1
+RandomForest_n_estimators = 100
+
+
+-------------  Output Regression ------------- 
+Mean Absolute Error:58.30740393562225
+Mean Squared Error:9257.83567121037
+Root Mean Squared Error:96.21764740010208
+Model Score:0.8474042068236315

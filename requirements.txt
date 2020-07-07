@@ -1,5 +1,5 @@
 TA_Lib==0.4.17
-pandas==1.0.3
+pandas==0.25.3
 numpy==1.18.3
 scipy==1.4.1
 openpyxl==3.0.3
@@ -9,3 +9,6 @@ matplotlib==3.2.1
 plotly==4.6.0
 scikit_learn==0.22.2.post1
 talib==0.1.1
+
+scikit-learn==0.22.2.post1
+ConfigSpace==0.4.12

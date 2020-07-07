@@ -33,7 +33,8 @@ from collections import Counter
 # (in the same directory that your python process is based)
 # Control delimiters, rows, column names with read_csv (see later) 
 
-df = pd.read_csv("outputs/1HOUR_BTCUSD_ALLTI.csv") 
+df = pd.read_csv("outputs/23062020_Classification_1MIN_ALLTI.csv")
+
 #df = pd.read_csv("output_AllData_moreTI.csv") 
 # Delete columns that contains only NaN values
 cols = df.columns[df.isna().all()]
@@ -45,14 +46,16 @@ target = df['Target']
 
 
 
-data_cols = df.drop(['Target', 'Timestamp', 'index'], axis='columns').columns.values
+data_cols = df.drop(['Target', 'index'], axis='columns').columns.values
 
 X = df[data_cols]
-
+start_time = time.time()
 X_train, X_test, y_train, y_test = train_test_split(X, target, test_size=0.2, train_size=0.8, shuffle=False, random_state = 42)
 
-model = RandomForestClassifier(n_estimators=500, random_state=42)
+model = RandomForestClassifier(n_estimators=10, random_state=42)
 classifier = model.fit(X_train, y_train)
+
+print('# Time to complete RF: ' + str(time.time() - start_time) + ' seconds')
 y_predict = model.predict(X_test)
 print('-------------  Real Random Forest Model ------------- ')
 print('Amount of target False/True occurences: {}'.format(Counter(target)))
@@ -145,7 +148,7 @@ df = df[['Timestamp','Close','Change','Target','Predicted']]
 
 
 
-df.to_csv("modelOutputs/PredictedModel_RF_ALLTI_1HOUR.csv") 
+#df.to_csv("modelOutputs/PredictedModel_RF_ALLTI_1HOUR.csv")
 
 
 plt.show()

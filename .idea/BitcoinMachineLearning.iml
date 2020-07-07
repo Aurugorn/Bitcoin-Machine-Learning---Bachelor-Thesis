@@ -4,8 +4,13 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
+    <content url="file://$USER_HOME$/Downloads/ta-lib" />
+    <content url="file://$USER_HOME$/Downloads/ta-lib-TA_Lib-0.4.18/talib" />
     <orderEntry type="jdk" jdkName="Python 3.6" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PackageRequirementsSettings">
+    <option name="versionSpecifier" value="Strong equality (==x.y.z)" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="format" value="EPYTEXT" />

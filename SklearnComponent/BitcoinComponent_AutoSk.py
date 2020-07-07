@@ -9,7 +9,7 @@ import autosklearn.pipeline.components.feature_preprocessing
 from autosklearn.pipeline.components.base \
     import AutoSklearnPreprocessingAlgorithm
 from autosklearn.pipeline.constants import DENSE, SIGNED_DATA, \
-    UNSIGNED_DATA
+    UNSIGNED_DATA, SPARSE, PREDICTIONS, INPUT
 from autosklearn.util.common import check_none
 import ta
 import talib
@@ -231,6 +231,7 @@ class BitcoinTransformer_AutoSk(AutoSklearnPreprocessingAlgorithm):
         @param adosc_slowperiod:
         @type adosc_slowperiod:
         '''
+
         self.useVolume = True
         self.random_state = random_state
         # All parameters for all technical indicators
@@ -399,8 +400,8 @@ class BitcoinTransformer_AutoSk(AutoSklearnPreprocessingAlgorithm):
                 'handles_multiclass': False,
                 'handles_multilabel': False,
                 'is_deterministic': True,
-                'input': (DENSE, UNSIGNED_DATA, SIGNED_DATA),
-                'output': (DENSE, UNSIGNED_DATA, SIGNED_DATA)}
+                'input': (SPARSE, DENSE, UNSIGNED_DATA),
+                'output': (INPUT,)}
 
     @staticmethod
     def get_hyperparameter_search_space(dataset_properties=None):

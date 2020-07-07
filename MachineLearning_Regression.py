@@ -30,8 +30,8 @@ from sklearn.dummy import DummyClassifier
 from collections import Counter
 from sklearn.preprocessing import StandardScaler
 from sklearn import metrics
-import plotly.graph_objects as go
-import plotly.express as px
+#import plotly.graph_objects as go
+#import plotly.express as px
 
 # Read data from file 'filename.csv' 
 # (in the same directory that your python process is based)
@@ -53,9 +53,12 @@ target = df['Target']
 data_cols = df.drop(['Target', 'Timestamp', 'index'], axis='columns').columns.values
 
 X = df[data_cols]
-
+print(X)
 X_train, X_test, y_train, y_test = train_test_split(X, target, test_size=0.2, train_size=0.8, shuffle=False, random_state = 42)
-
+print('y_train in beginning')
+print(y_train)
+print('Y_test in beginning')
+print(y_test)
 # Scaledataset
 if SCALE_DATASET:
     sc = StandardScaler()

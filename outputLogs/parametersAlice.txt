@@ -1,0 +1,79 @@
+Regression RandomizedSearchCV 1HR:
+	RandomizedSearchCV_n_iter_search = 20 
+	RandomForest_n_estimators = 10
+	estimated runtime: 10hr.
+
+	RandomizedSearchCV_n_iter_search = 1
+	RandomForest_n_estimators = 10
+	Runtime was: 829 sec = 14 min
+
+	___________ SHORTEN DATASET (2019-2020) _____________
+	RandomizedSearchCV_n_iter_search = 1
+	RandomForest_n_estimators = 10
+	Runtime was: 37 sec
+
+	RandomizedSearchCV_n_iter_search = 1
+	RandomForest_n_estimators = 100
+	Runtime was: 336 sec = 6min
+
+ -->    RandomizedSearchCV_n_iter_search = 200
+	RandomForest_n_estimators = 64
+	Runtime was: 220 sec = 6min
+
+Regression RandomizedSearchCV 1MIN:
+	RandomizedSearchCV_n_iter_search = 20 
+	RandomForest_n_estimators = 10
+	estimated runtime: 10hr.
+
+	RandomizedSearchCV_n_iter_search = 1
+	RandomForest_n_estimators = 10
+	Runtime was: 30 min ##
+
+	___________ SHORTEN DATASET (2020) _____________
+	RandomizedSearchCV_n_iter_search = 1
+	RandomForest_n_estimators = 10
+	Runtime was: 135 sec = 2min
+
+-->	RandomizedSearchCV_n_iter_search = 80
+	RandomForest_n_estimators = 32
+	Runtime: 10hr
+
+Classification RandomizedSearchCV 1HR:
+	RandomizedSearchCV_n_iter_search = 200
+	RandomForest_n_estimators = 100
+	estimated runtime: 7.5hr
+
+	RandomizedSearchCV_n_iter_search = 10
+	RandomForest_n_estimators = 100
+	Runtime was: 1335 seconds = 23 min	
+
+	RandomizedSearchCV_n_iter_search = 1
+	RandomForest_n_estimators = 100
+	Runtime was: 150 seconds
+
+	RandomizedSearchCV_n_iter_search = 1
+	RandomForest_n_estimators = 10
+	Runtime was: 19 seconds 
+
+Classification RandomizedSearchCV 1MIN:
+	RandomizedSearchCV_n_iter_search = 1
+	RandomForest_n_estimators = 10
+	Runtime was: 1316 seconds = 22 min 
+
+	___________ SHORTEN DATASET (2019-2020) _____________
+	RandomizedSearchCV_n_iter_search = 1
+	RandomForest_n_estimators = 10
+	Runtime was: 122 sec = 2 min
+
+-->	RandomizedSearchCV_n_iter_search = 80
+	RandomForest_n_estimators = 32
+	Runtime was: 10hr
+
+	___________ SHORTEN DATASET (2020) _____________
+	RandomizedSearchCV_n_iter_search = 1
+	RandomForest_n_estimators = 10
+	Runtime was: 10 sec
+
+-->	RandomizedSearchCV_n_iter_search = 280
+	RandomForest_n_estimators = 128
+	Runtime was: 10hr

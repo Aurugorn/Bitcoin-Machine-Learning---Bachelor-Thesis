@@ -1,9 +1,11 @@
 # Authors: Stan van der Avoird <stan@restica.nl>
 #
+import datetime
 
 import ta
 import talib
 from sklearn.base import BaseEstimator, TransformerMixin
+
 
 # ------------------------------------- BitcoinTransformer component -------------------------------------#
 class BitcoinTransformer(BaseEstimator, TransformerMixin):
@@ -24,14 +26,10 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
                  macd_period_shortterm=12,
                  macd_period_to_signal=9,
                  cci_periods=20,
-                 cci_constant=0.015,
                  bb_periods=20,
-                 bb_n_factor_standard_dev=2,
                  mean_o_c_period=3,
                  var_close_period=5,
-                 var_close_nbdev=1,
                  var_open_period=5,
-                 var_open_nbdev=1,
                  sma_high_period=3,
                  sma_low_period=3,
                  sma_handl_period=3,
@@ -53,7 +51,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
                  sarext_accelerationshort=0,
                  sarext_accelerationmaxshort=0,
                  t3_period=5,
-                 t3_vfactor=0,
                  tema_period=30,
                  trima_period=30,
                  wma_period=30,
@@ -61,7 +58,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
                  adxr_period=14,
                  apo_fastperiod=12,
                  apo_slowperiod=26,
-                 apo_matype=0,
                  aroon_period=14,
                  aroonosc_period=14,
                  cmo_period=14,
@@ -73,7 +69,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
                  plus_dm_period=14,
                  ppo_fastperiod=12,
                  ppo_slowperiod=26,
-                 ppo_matype=0,
                  rocp_period=10,
                  rocr_period=10,
                  rocr100_period=10,
@@ -239,14 +234,10 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.macd_period_shortterm = macd_period_shortterm
         self.macd_period_to_signal = macd_period_to_signal
         self.cci_periods = cci_periods
-        self.cci_constant = cci_constant
         self.bb_periods = bb_periods
-        self.bb_n_factor_standard_dev = bb_n_factor_standard_dev
         self.mean_o_c_period = mean_o_c_period
         self.var_close_period = var_close_period
-        self.var_close_nbdev = var_close_nbdev
         self.var_open_period = var_open_period
-        self.var_open_nbdev = var_open_nbdev
         self.sma_high_period = sma_high_period
         self.sma_low_period = sma_low_period
         self.sma_handl_period = sma_handl_period
@@ -268,7 +259,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.sarext_accelerationshort = sarext_accelerationshort
         self.sarext_accelerationmaxshort = sarext_accelerationmaxshort
         self.t3_period = t3_period
-        self.t3_vfactor = t3_vfactor
         self.tema_period = tema_period
         self.trima_period = trima_period
         self.wma_period = wma_period
@@ -276,7 +266,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.adxr_period = adxr_period
         self.apo_fastperiod = apo_fastperiod
         self.apo_slowperiod = apo_slowperiod
-        self.apo_matype = apo_matype
         self.aroon_period = aroon_period
         self.aroonosc_period = aroonosc_period
         self.cmo_period = cmo_period
@@ -288,7 +277,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.plus_dm_period = plus_dm_period
         self.ppo_fastperiod = ppo_fastperiod
         self.ppo_slowperiod = ppo_slowperiod
-        self.ppo_matype = ppo_matype
         self.rocp_period = rocp_period
         self.rocr_period = rocr_period
         self.rocr100_period = rocr100_period
@@ -300,10 +288,16 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.adosc_fastperiod = adosc_fastperiod
         self.adosc_slowperiod = adosc_slowperiod
 
+        #Set couple of paramaters to default, dont change
+        self.cci_constant = 0.015
+        self.bb_n_factor_standard_dev = 2
+        self.var_close_nbdev = 1
+        self.var_open_nbdev = 1
+        self.t3_vfactor = 0
+        self.apo_matype = 0
+        self.ppo_matype = 0
+
     def _validate_input(self, X):
-        # Prints weirdly transformed data array, still same number of columns but column headers are gone and values are changed.
-        print(X) # <-- Dit is de screenshot dataset, maar deze dataset is misvormd dus kan mijn BitcoinComponent niet meer de input validaten
-                # en ook niet alle technical indicators berekenen?
         if 'Open' not in X:
             raise ValueError("Missing column 'Open'. Make sure to rename your dataframe colums when needed.")
         if 'Low' not in X:
@@ -319,6 +313,7 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         return X
 
     def fit(self, X, y=None):
+
         """
         Function to train the dataset. After fitting the model can be used to make predictions, usually with a .predict() method call.
         @param X: Training set
@@ -328,9 +323,74 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         @return: Trained set
         @rtype: self
         """
+        self.sma_close_timeperiod = int(self.sma_close_timeperiod)
+        self.so_n = int(self.so_n)
+        self.so_d_n = int(self.so_d_n)
+        self.momentum_period = int(self.momentum_period)
+        self.roc_period = int(self.roc_period)
+        self.wr_lookback_period = int(self.wr_lookback_period)
+        self.macd_period_longterm = int(self.macd_period_longterm)
+        self.macd_period_shortterm = int(self.macd_period_shortterm)
+        self.macd_period_to_signal = int(self.macd_period_to_signal)
+        self.cci_periods = int(self.cci_periods)
+        self.bb_periods = int(self.bb_periods)
+        self.mean_o_c_period = int(self.mean_o_c_period)
+        self.var_close_period = int(self.var_close_period)
+        self.var_open_period = int(self.var_open_period)
+        self.sma_high_period = int(self.sma_high_period)
+        self.sma_low_period = int(self.sma_low_period)
+        self.sma_handl_period = int(self.sma_handl_period)
+        self.sma_h_l_c_o_period = int(self.sma_h_l_c_o_period)
+        self.dema_period = int(self.dema_period)
+        self.ema_period = int(self.ema_period)
+        self.kama_period = int(self.kama_period)
+        self.ma_period = int(self.ma_period)
+        self.midpoint_period = int(self.midpoint_period)
+        self.midprice_period = int(self.midprice_period)
+        self.sar_acceleration = int(self.sar_acceleration)
+        self.sar_maximum = int(self.sar_maximum)
+        self.sarext_startvalue = int(self.sarext_startvalue)
+        self.sarext_offsetonreverse = int(self.sarext_offsetonreverse)
+        self.sarext_accelerationinitlong = int(self.sarext_accelerationinitlong)
+        self.sarext_accelerationlong = int(self.sarext_accelerationlong)
+        self.sarext_accelerationmaxlong = int(self.sarext_accelerationmaxlong)
+        self.sarext_accelerationinitshort = int(self.sarext_accelerationinitshort)
+        self.sarext_accelerationshort = int(self.sarext_accelerationshort)
+        self.sarext_accelerationmaxshort = int(self.sarext_accelerationmaxshort)
+        self.t3_period = int(self.t3_period)
+        self.tema_period = int(self.tema_period)
+        self.trima_period = int(self.trima_period)
+        self.wma_period = int(self.wma_period)
+        self.adx_period = int(self.adx_period)
+        self.adxr_period = int(self.adxr_period)
+        self.apo_fastperiod = int(self.apo_fastperiod)
+        self.apo_slowperiod = int(self.apo_slowperiod)
+        self.aroon_period = int(self.aroon_period)
+        self.aroonosc_period = int(self.aroonosc_period)
+        self.cmo_period = int(self.cmo_period)
+        self.dx_period = int(self.dx_period)
+        self.mfi_period = int(self.mfi_period)
+        self.minus_di_period = int(self.minus_di_period)
+        self.minus_dm_period = int(self.minus_dm_period)
+        self.plus_di_period = int(self.plus_di_period)
+        self.plus_dm_period = int(self.plus_dm_period)
+        self.ppo_fastperiod = int(self.ppo_fastperiod)
+        self.ppo_slowperiod = int(self.ppo_slowperiod)
+        self.rocp_period = int(self.rocp_period)
+        self.rocr_period = int(self.rocr_period)
+        self.rocr100_period = int(self.rocr100_period)
+        self.rsi_period = int(self.rsi_period)
+        self.trix_period = int(self.trix_period)
+        self.ultosc_period1 = int(self.ultosc_period1)
+        self.ultosc_period2 = int(self.ultosc_period2)
+        self.ultosc_period3 = int(self.ultosc_period3)
+        self.adosc_fastperiod = int(self.adosc_fastperiod)
+        self.adosc_slowperiod = int(self.adosc_slowperiod)
         return self
 
     def transform(self, X):
+        now = datetime.datetime.now()
+        print('[{}] : Starting new Transformer optimizing 67 Technical Indicator parameters'.format(now.strftime("%Y-%m-%d %H:%M:%S")))
 
         """
         @param X: Training set
@@ -411,9 +471,9 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         High positive readings indicate that prices are well above their average, which is a show of strength. 
         Low negative readings indicate that prices are well below their average, which is a show of weakness.
         '''
-        CCI = ta.trend.cci(high=X["High"], low=X["Low"], close=X["Close"], n=self.cci_periods, c=self.cci_constant,
-                           fillna=False)
-        X['CCI'] = CCI
+
+        #CCI = ta.trend.cci(high=X["High"], low=X["Low"], close=X["Close"], n=self.cci_periods, c=self.cci_constant, fillna=False)
+        #X['CCI'] = CCI
 
         # Bollinger Bands (BB)
         '''
@@ -513,6 +573,7 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         # ADXR - Average Directional Movement Index Rating
         X['ADXR'] = talib.ADXR(X["High"], X["Low"], X["Close"], timeperiod=self.adxr_period)
         # APO - Absolute Price Oscillator
+
         X['APO'] = talib.APO(X["Close"], fastperiod=self.apo_fastperiod, slowperiod=self.apo_slowperiod, matype=self.apo_matype)
         # AROON - Aroon
         X['aroondown'], X['aroonup'] = talib.AROON(X["High"], X["Low"], timeperiod=self.aroon_period)
@@ -565,9 +626,9 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         # HT_DCPERIOD - Hilbert Transform - Dominant Cycle Period
         X['HT_DCPERIOD'] = talib.HT_DCPERIOD(X["Close"])
         # HT_DCPHASE - Hilbert Transform - Dominant Cycle Phase
-        X['HT_DCPHASE'] = talib.HT_DCPHASE(X["Close"])
+        #X['HT_DCPHASE'] = talib.HT_DCPHASE(X["Close"])
         # HT_TRENDMODE - Hilbert Transform - Trend vs Cycle Mode
-        X['HT_TRENDMODE'] = talib.HT_TRENDMODE(X["Close"])
+        #X['HT_TRENDMODE'] = talib.HT_TRENDMODE(X["Close"])
         # ######################## Price transform functions ############################
         # AVGPRICE - Average Price
         X['AVGPRICE'] = talib.AVGPRICE(X["Open"], X["High"], X["Low"], X["Close"])
@@ -585,8 +646,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         # Delete rows that contain at least one NaN
         X = X.dropna()
         '''
-        print("After:")
-        print(X)
         return X
 
 # Class to combine several parameters from the BitcoinTransformer to reduce the amount of total combination of parameters
@@ -603,7 +662,6 @@ class ParameterRelationsBTCTrans(BitcoinTransformer):
                  shortterm = 12,
                  bb_cci = 20,
                  var_t3 = 5,
-                 default_1 = 1,
                  dema_trema = 30,
                  zero = 0,
                  rocperiod = 10):
@@ -613,10 +671,10 @@ class ParameterRelationsBTCTrans(BitcoinTransformer):
         self.shortterm = shortterm
         self.bb_cci = bb_cci
         self.var_t3 = var_t3
-        self.default_1 = default_1
         self.dema_trema = dema_trema
         self.zero = zero
         self.rocperiod = rocperiod
+
 
         BitcoinTransformer.__init__(self, sma_close_timeperiod=self.fastperiod, so_d_n=self.fastperiod, momentum_period=self.fastperiod, mean_o_c_period=self.fastperiod, sma_high_period=self.fastperiod, sma_low_period=self.fastperiod , sma_handl_period=self.fastperiod, sma_h_l_c_o_period=self.fastperiod, adosc_fastperiod=self.fastperiod,
                                     macd_period_longterm=self.longterm, apo_slowperiod=self.longterm, ppo_slowperiod=self.longterm,
@@ -646,8 +704,6 @@ class ParameterRelationsBTCTrans(BitcoinTransformer):
                                     var_close_period=self.var_t3,
                                     var_open_period=self.var_t3,
                                     t3_period=self.var_t3,
-                                    var_close_nbdev=self.default_1,
-                                    var_open_nbdev=self.default_1,
 
                                     dema_period=self.dema_trema,
                                     ema_period=self.dema_trema,
@@ -668,9 +724,6 @@ class ParameterRelationsBTCTrans(BitcoinTransformer):
                                     sarext_accelerationinitshort=self.zero,
                                     sarext_accelerationshort=self.zero,
                                     sarext_accelerationmaxshort=self.zero,
-                                    t3_vfactor=self.zero,
-                                    apo_matype=self.zero,
-                                    ppo_matype=self.zero,
 
                                     rocp_period=self.rocperiod,
                                     rocr_period=self.rocperiod,
