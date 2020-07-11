@@ -1,0 +1,30 @@
+RandomForest took 52.41 seconds for 100 n_estimators.Program Parameters:
+MachineLearningMethod = Classification
+typeRegression = Difference
+intervalPeriods = 1
+RunType = 1
+RandomizedSearchCV_Status = OFF
+RandomizedSearchCV_n_iter_search = 1
+RandomForest_n_estimators = 100
+
+
+RandomForest took 209.75 seconds for 400 n_estimators.Program Parameters:
+MachineLearningMethod = Classification
+typeRegression = Difference
+intervalPeriods = 1
+RunType = 1
+RandomizedSearchCV_Status = OFF
+RandomizedSearchCV_n_iter_search = 1
+RandomForest_n_estimators = 400
+
+
+RandomForest took 527.42 seconds for 1000 n_estimators.Program Parameters:
+MachineLearningMethod = Classification
+typeRegression = Difference
+intervalPeriods = 1
+RunType = 1
+RandomizedSearchCV_Status = OFF
+RandomizedSearchCV_n_iter_search = 1
+RandomForest_n_estimators = 1000
+
+
