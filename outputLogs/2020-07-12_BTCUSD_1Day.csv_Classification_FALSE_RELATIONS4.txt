@@ -1,0 +1,27 @@
+RandomForest took 1.39 seconds for 128 n_estimators.Program Parameters:
+MachineLearningMethod = Classification
+typeRegression = Difference
+intervalPeriods = 1
+RunType = 1
+RandomizedSearchCV_Status = OFF
+RandomizedSearchCV_n_iter_search = 300
+RandomForest_n_estimators = 128
+
+
+-------------  Output Classification ------------- 
+Accuracy score: 
+52.41
+              precision    recall  f1-score   support
+
+       False       0.51      0.76      0.61       221
+        True       0.57      0.30      0.40       235
+
+    accuracy                           0.52       456
+   macro avg       0.54      0.53      0.50       456
+weighted avg       0.54      0.52      0.50       456
+
+
+Conf Matrix:
+[[168  53]
+ [164  71]]
+

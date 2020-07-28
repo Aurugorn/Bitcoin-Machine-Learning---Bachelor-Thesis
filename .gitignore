@@ -6,3 +6,19 @@ inputs/bitfinex_tBTCUSD_1m.csv
 *.csv
 
 *.xlsx
+
+accuraciesOutput/default/
+
+accuraciesOutput/no_relations/
+
+accuraciesOutput/relations/
+
+accuraciesOutput/rf_optimized/
+
+accuraciesOutput_feeModel/default/
+
+accuraciesOutput_feeModel/no_relations/
+
+accuraciesOutput_feeModel/relations/
+
+accuraciesOutput_feeModel/rf_optimized/

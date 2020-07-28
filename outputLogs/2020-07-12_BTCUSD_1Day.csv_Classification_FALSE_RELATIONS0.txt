@@ -1,0 +1,54 @@
+RandomForest took 1.50 seconds for 128 n_estimators.RandomForest took 1.56 seconds for 128 n_estimators.RandomForest took 1.58 seconds for 128 n_estimators.RandomForest took 1.45 seconds for 128 n_estimators.RandomForest took 1.67 seconds for 128 n_estimators.Program Parameters:
+MachineLearningMethod = Classification
+typeRegression = Difference
+intervalPeriods = 1
+RunType = 1
+RandomizedSearchCV_Status = OFF
+RandomizedSearchCV_n_iter_search = 300
+RandomForest_n_estimators = 128
+
+
+-------------  Output Classification ------------- 
+Accuracy score: 
+51.1
+              precision    recall  f1-score   support
+
+       False       0.50      0.79      0.61       221
+        True       0.56      0.25      0.34       235
+
+    accuracy                           0.51       456
+   macro avg       0.53      0.52      0.48       456
+weighted avg       0.53      0.51      0.47       456
+
+
+Conf Matrix:
+[[175  46]
+ [177  58]]
+
+RandomForest took 1.39 seconds for 128 n_estimators.Program Parameters:
+MachineLearningMethod = Classification
+typeRegression = Difference
+intervalPeriods = 1
+RunType = 1
+RandomizedSearchCV_Status = OFF
+RandomizedSearchCV_n_iter_search = 300
+RandomForest_n_estimators = 128
+
+
+-------------  Output Classification ------------- 
+Accuracy score: 
+51.1
+              precision    recall  f1-score   support
+
+       False       0.50      0.79      0.61       221
+        True       0.56      0.25      0.34       235
+
+    accuracy                           0.51       456
+   macro avg       0.53      0.52      0.48       456
+weighted avg       0.53      0.51      0.47       456
+
+
+Conf Matrix:
+[[175  46]
+ [177  58]]
+

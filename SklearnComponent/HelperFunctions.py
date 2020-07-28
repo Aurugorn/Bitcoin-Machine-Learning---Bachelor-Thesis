@@ -330,9 +330,9 @@ def main(argv):
 
     relationsHyperparameters = "UNSET"
     if RunType == 1:
-        relationsHyperparameters = "FALSE_RELATIONS";
+        relationsHyperparameters = "FALSE_RELATIONS"
     elif RunType == 2:
-        relationsHyperparameters = "TRUE_RELATIONS";
+        relationsHyperparameters = "TRUE_RELATIONS"
 
     # ------------------------------------- Workflow, preparing dataset ~ results of models -------------------------------------#
     # 1. Load CSV
@@ -435,7 +435,7 @@ def main(argv):
     pipeline.fit(X_train, y_train)
 
     # open file to output
-    typeRegression_txt = '';
+    typeRegression_txt = ''
     if MachineLearningMethod == "Regression":
         typeRegression_txt = typeRegression + "_"
     nameOfExportedModel = str(date.today()) + "_" + str(

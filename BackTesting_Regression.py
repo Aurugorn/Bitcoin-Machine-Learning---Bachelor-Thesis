@@ -15,10 +15,7 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 #new imports
 from cryptory import Cryptory
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import matplotlib.cbook as cbook
+
 import locale
 
 locale.setlocale( locale.LC_ALL, '' )
@@ -28,38 +25,23 @@ locale.setlocale( locale.LC_ALL, '' )
 # Portfolio axes
 
 y_back_0 = []
-strat0_name = 'Portfolio: Optimized Model 60.23%'
-#strat0_name = 'Portfolio: Optimized Model 4.12 MAE'
-#strat0_name = 'Portfolio: Optimized Model 54.54%'
+strat0_name = 'Portfolio: Regression, Str=1, Strictness=1'
 y_back_1 = []
-strat1_name = 'Portfolio: Classification Baseline 57.79%'
-#strat1_name = 'Portfolio: Regression Baseline 3.60 MAE'
-#strat1_name = 'Portfolio: Classification Baseline 50.70%'
+strat1_name = 'Portfolio: Regression, Str=1, Strictness=10'
 y_back_2 = []
 strat2_name = 'Portfolio: Regression, Str=2, Strictness=10'
 
-for backTestingCycle in range(0, 2):
+for backTestingCycle in range(0, 3):
     if backTestingCycle == 0:
-        #df = pd.read_csv("PredictedModels/1m_classification_60acc_norel.csv")
-        df = pd.read_csv("PredictedModels_feeModel/1hClass58perc.csv")
-        #df = pd.read_csv("PredictedModels/1h_regression_norel.csv")
-        #df = pd.read_csv("PredictedModels/1h_classification_54acc.csv")
-    if backTestingCycle == 1:
-        #df = pd.read_csv("PredictedModels/baselineModels/Minute_Classification.csv")
-        df = pd.read_csv("PredictedModels/baselineModels/Hour_Classification.csv")
-        df['Predicted'] = True
-        #df = pd.read_csv("PredictedModels/baselineModels/Hour_Regression.csv")
-        #df = pd.read_csv("PredictedModels/baselineModels/Hour_Classification.csv")
-
+        df = pd.read_csv("modelOutputsRegression/PredictedModel_RF_ALLTI_1MIN_DIFF_n10.csv") 
     #df = df[0:10000]
     # 1min data currently available until: presentDate = "2020-02-05"
-    # 1hour data currently available until: presentDate = "2020-04-07"
+    # 1hour data currently available until: presentDate = "2020-04-08"
     # 1day data currently available until: presentDate = today - 2 days
-    presentDate = "2020-04-07"
-    #presentDate = "2020-04-07"
-
+    presentDate = "2020-02-05"
+    
     MinMaxScaling = False
-    takerFee = 0.1 #Buyers fee
+    takerFee = 0.0175 #Buyers fee
     #takerFee = 0
     makerFee = 0 #Seller fee
     startingPortfolio = 10000
@@ -85,11 +67,11 @@ for backTestingCycle in range(0, 2):
     x_axis = []
     y_axis = []
     # Set following parameters for strategy:
-    TYPE_MACHINE_LEARNING = "Classification" # Regression or Classification
+    TYPE_MACHINE_LEARNING = "Regression" # Regression or Classification
     STRATEGY = 1 # 1 = Buy and Sell if model says so
                     # 2 = Buy if model says so. And sell only when bitcoin value + transaction costs > last bought price
                     # 3 = ORACLE strategy --> 100% Accuracy prediction
-    ADDITIONAL_STRAT = "NoStrat" # BuyThreshold: Buy only if regression model predicts that bitcoin will grow more than transaction fee of buying
+    ADDITIONAL_STRAT = "BuyThreshold" # BuyThreshold: Buy only if regression model predicts that bitcoin will grow more than transaction fee of buying                
                                       # NoStrat : Nothing
     # ONLY FOR REGRESSION AND ADDITIONAL_STRAT == "BuyThreshold" AND STRATEGY = 1 OR 2
     MODEL_STRICTNESS = 10 # 1 = 100% Follow predicted value --> Very Strict
@@ -100,16 +82,16 @@ for backTestingCycle in range(0, 2):
     #backTestingCycle=2: Regression, Strategy = 2, ADDITIONAL_STRAT = "BuyThreshold", Model_strictness = 10 
     if backTestingCycle == 0:
         # Set following parameters for strategy:
-        TYPE_MACHINE_LEARNING = "Classification"
+        TYPE_MACHINE_LEARNING = "Regression" 
         STRATEGY = 1 
-        ADDITIONAL_STRAT = "NoStrat"
-        MODEL_STRICTNESS = 10
+        ADDITIONAL_STRAT = "BuyThreshold" 
+        MODEL_STRICTNESS = 1
     elif backTestingCycle == 1:
         # Set following parameters for strategy:
-        TYPE_MACHINE_LEARNING = "Classification"
-        STRATEGY = 1
-        ADDITIONAL_STRAT = "NoStrat"
-        MODEL_STRICTNESS = 10
+        TYPE_MACHINE_LEARNING = "Regression" 
+        STRATEGY = 1 
+        ADDITIONAL_STRAT = "BuyThreshold" 
+        MODEL_STRICTNESS = 10 
     elif backTestingCycle == 2:
         # Set following parameters for strategy:
         TYPE_MACHINE_LEARNING = "Regression" 
@@ -176,7 +158,7 @@ for backTestingCycle in range(0, 2):
             MODEL_STRICTNESS = 1
         else:
             modelPredicts = j.Predicted
-
+       
         if BITCOIN > 0:
             BITCOIN = BITCOIN * (1 + j.Change) #if j.Change = -0.3% == -0.003 == 0.997 * BITCOIN (1 - 0.003)
              #Highest and lowest value of bitcoin
@@ -286,64 +268,8 @@ if MinMaxScaling:
     df[['Portfolio','BTC Price', 'Break-even']] = (
             df[['Portfolio','BTC Price', 'Break-even']]-df[['Portfolio','BTC Price', 'Break-even']].min())/(
             df[['Portfolio','BTC Price', 'Break-even']].max()-df[['Portfolio','BTC Price', 'Break-even']].min())
+     
 
-locale.setlocale(locale.LC_ALL, "en_US")
-date_time = pd.to_datetime(x_axis)
-years = mdates.YearLocator()   # every year
-months = mdates.MonthLocator()  # every month
-years_fmt = mdates.DateFormatter('%b %Y')
-
-# Load a numpy structured array from yahoo csv data with fields date, open,
-# close, volume, adj_close from the mpl-data/example directory.  This array
-# stores the date as an np.datetime64 with a day unit ('D') in the 'date'
-# column.
-
-fig, ax = plt.subplots()
-x1 = date_time
-y1 = y_back_0
-ax.plot(x1, y1, label = strat0_name)
-
-# format the ticks
-ax.xaxis.set_major_locator(months)
-ax.xaxis.set_major_formatter(years_fmt)
-ax.xaxis.set_minor_locator(months)
-
-# round to nearest years.
-ax.set_xlim(date_time[0], date_time[-1])
-
-# format the coords message box
-ax.format_xdata = mdates.DateFormatter('%Y-%m-%d')
-ax.format_ydata = lambda x: '$%1.2f' % x  # format the price.
-ax.grid(True)
-
-# rotates and right aligns the x labels, and moves the bottom of the
-# axes up to make room for them
-fig.autofmt_xdate()
-
-plt.show()
-exit()
-
-# line 1 points
-x1 = x_axis
-y1 = y_back_0
-# plotting the line 1 points
-plt.plot(x1, y1, label = strat0_name)
-# line 2 points
-x2 = x_axis
-y2 = y_back_1
-# plotting the line 2 points
-plt.plot(x2, y2, label = strat1_name)
-plt.xlabel('Date')
-# Set the y axis label of the current axis.
-plt.ylabel('Euro')
-# Set a title of the current axes.
-plt.xticks(x_ticks)
-plt.title('Two or more lines on same plot with suitable legends ')
-# show a legend on the plot
-plt.legend()
-# Display a figure.
-plt.show()
-exit()
 fig = go.Figure()
 
 # Line for portfolio

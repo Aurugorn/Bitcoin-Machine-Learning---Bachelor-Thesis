@@ -25,7 +25,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
                  macd_period_longterm=26,
                  macd_period_shortterm=12,
                  macd_period_to_signal=9,
-                 cci_periods=20,
                  bb_periods=20,
                  mean_o_c_period=3,
                  var_close_period=5,
@@ -99,10 +98,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         @type macd_period_shortterm:
         @param macd_period_to_signal:
         @type macd_period_to_signal:
-        @param cci_periods:
-        @type cci_periods:
-        @param cci_constant:
-        @type cci_constant:
         @param bb_periods:
         @type bb_periods:
         @param bb_n_factor_standard_dev:
@@ -233,7 +228,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.macd_period_longterm = macd_period_longterm
         self.macd_period_shortterm = macd_period_shortterm
         self.macd_period_to_signal = macd_period_to_signal
-        self.cci_periods = cci_periods
         self.bb_periods = bb_periods
         self.mean_o_c_period = mean_o_c_period
         self.var_close_period = var_close_period
@@ -289,7 +283,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.adosc_slowperiod = adosc_slowperiod
 
         #Set couple of paramaters to default, dont change
-        self.cci_constant = 0.015
         self.bb_n_factor_standard_dev = 2
         self.var_close_nbdev = 1
         self.var_open_nbdev = 1
@@ -332,7 +325,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         self.macd_period_longterm = int(self.macd_period_longterm)
         self.macd_period_shortterm = int(self.macd_period_shortterm)
         self.macd_period_to_signal = int(self.macd_period_to_signal)
-        self.cci_periods = int(self.cci_periods)
         self.bb_periods = int(self.bb_periods)
         self.mean_o_c_period = int(self.mean_o_c_period)
         self.var_close_period = int(self.var_close_period)
@@ -390,7 +382,7 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         now = datetime.datetime.now()
-        print('[{}] : Starting new Transformer optimizing 67 Technical Indicator parameters'.format(now.strftime("%Y-%m-%d %H:%M:%S")))
+        # print('[{}] : Starting new Transformer optimizing 67 Technical Indicator parameters'.format(now.strftime("%Y-%m-%d %H:%M:%S")))
 
         """
         @param X: Training set
@@ -463,17 +455,6 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         MACD = ta.trend.MACD(close=X["Close"], n_slow=self.macd_period_longterm, n_fast=self.macd_period_shortterm,
                              n_sign=self.macd_period_to_signal, fillna=False)
         X['MACD'] = MACD.macd()
-
-        # Commodity Channel Index (CCI)
-        '''
-        Description:
-        CCI measures the difference between a security’s price change and its average price change. 
-        High positive readings indicate that prices are well above their average, which is a show of strength. 
-        Low negative readings indicate that prices are well below their average, which is a show of weakness.
-        '''
-
-        #CCI = ta.trend.cci(high=X["High"], low=X["Low"], close=X["Close"], n=self.cci_periods, c=self.cci_constant, fillna=False)
-        #X['CCI'] = CCI
 
         # Bollinger Bands (BB)
         '''
@@ -646,6 +627,7 @@ class BitcoinTransformer(BaseEstimator, TransformerMixin):
         # Delete rows that contain at least one NaN
         X = X.dropna()
         '''
+
         return X
 
 # Class to combine several parameters from the BitcoinTransformer to reduce the amount of total combination of parameters
@@ -695,11 +677,12 @@ class ParameterRelationsBTCTrans(BitcoinTransformer):
                                     plus_dm_period=self.midterm,
                                     rsi_period=self.midterm,
                                     ultosc_period2=self.midterm,
+
                                     roc_period=self.shortterm,
                                     macd_period_shortterm=self.shortterm,
                                     apo_fastperiod=self.shortterm,
                                     ppo_fastperiod=self.shortterm,
-                                    cci_periods=self.bb_cci,
+
                                     bb_periods=self.bb_cci,
                                     var_close_period=self.var_t3,
                                     var_open_period=self.var_t3,
@@ -770,10 +753,8 @@ class ParameterRelationsBTCTrans(BitcoinTransformer):
         
         macd_period_to_signal=9,
         
-        cci_periods=20,
         bb_periods=20,
-        
-        cci_constant=0.015,
+      
         
         bb_n_factor_standard_dev=2,
         

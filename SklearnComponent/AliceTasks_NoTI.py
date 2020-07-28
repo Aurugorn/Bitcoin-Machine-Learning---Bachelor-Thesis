@@ -136,8 +136,8 @@ def generateTarget(df="", method="Classification", typeRegression="Difference", 
     # Start with function
     if method == "Classification":
         # Add new column 'Target' . True if Close price from this timestamp is higher than Close price of previous timestamp
-        df['Target'] = np.where(df.Close.shift(-1) > df.Close, True, False)
-        #df['Target'] = np.where(df.Close.shift(-1)* (1-(0.10/100)) > df.Close, True, False)
+        #df['Target'] = np.where(df.Close.shift(-1) > df.Close, True, False)
+        df['Target'] = np.where(df.Close.shift(-1)* (1-(0.10/100)) > df.Close, True, False)
     elif method == "Regression":
         if typeRegression == "Difference":
             df['Target'] = df.Close.shift(-intervalPeriods) - df.Close
@@ -265,19 +265,12 @@ def getHyperParamBTC(typeofrun=1):
                       'BitcoinTransformer__rocperiod': loguniform(2, 100)}
     elif typeofrun == 3:
         # Only Random Forest hyperparameters
-        '''
         param_dist = {'classify__max_depth': [80, 90, 100, 110],
                       'classify__max_features': [2, 3],
                       'classify__min_samples_leaf': [3, 4, 5],
                       'classify__min_samples_split': [8, 10, 12],
                       'classify__n_estimators': [100, 200, 300, 1000],
                       }
-        '''
-        param_dist = {'classify__max_depth': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None],
-                        'classify__max_features': ['auto', 'sqrt'],
-                        'classify__min_samples_leaf': [1, 2, 4],
-                        'classify__min_samples_split': [2, 5, 10],
-                        'classify__n_estimators': [100, 200, 400, 600, 800, 1000]}
     return param_dist
 
 # Read input txt file, and read line by line the accuracy for classification or MAE for regression
@@ -297,7 +290,7 @@ def readTxtResults(input):
 
 
 # helper functions to calculate multiple baselines for classification & regression
-def calculateBaselines(df, target, intervalType, MachineLearningMethod, FeeModel):
+def calculateBaselines(df, target, intervalType, MachineLearningMethod):
     X = df[["Open", "Low", "High", "Close", "Volume"]]
     X_train, X_test, y_train, y_test = train_test_split(X, target, test_size=0.2, train_size=0.8, shuffle=False,
                                                         random_state=42)
@@ -401,46 +394,30 @@ def calculateBaselines(df, target, intervalType, MachineLearningMethod, FeeModel
             RF_OPTIMIZED = readTxtResults('../accuraciesOutput/rf_optimized/bitfinex_tBTCUSD_1m.csv_Regression_Difference_FALSE_RELATIONS.txt')
             NO_RELATIONS = readTxtResults('../accuraciesOutput/no_relations/bitfinex_tBTCUSD_1m.csv_Regression_Difference_FALSE_RELATIONS.txt')
             RELATIONS = readTxtResults('../accuraciesOutput/relations/bitfinex_tBTCUSD_1m.csv_Regression_Difference_TRUE_RELATIONS.txt')
-        xLabelNames = ['Default', 'RF Optimized', '68 Hyp..', '14 Hyp..',
+        xLabelNames = ['Default', 'RF Optimized', '75 Hyp..', '14 Hyp..',
                        'No-change', 'Mean', 'Median']
         data = [DEFAULT, RF_OPTIMIZED, NO_RELATIONS, RELATIONS, [MAE_nochange], [MAE_mean], [MAE_median]]
     elif MachineLearningMethod == "Classification":
-        if FeeModel == "OFF":
-            if intervalType == "Day":
-                DEFAULT = readTxtResults('../accuraciesOutput/default/BTCUSD_1Day.csv_Classification_FALSE_RELATIONS.txt')
-                RF_OPTIMIZED = readTxtResults('../accuraciesOutput/rf_optimized/BTCUSD_1Day.csv_Classification_FALSE_RELATIONS.txt')
-                NO_RELATIONS = readTxtResults('../accuraciesOutput/no_relations/BTCUSD_1Day.csv_Classification_FALSE_RELATIONS.txt')
-                RELATIONS = readTxtResults('../accuraciesOutput/relations/BTCUSD_1Day.csv_Classification_TRUE_RELATIONS.txt')
-            elif intervalType == "Hour":
-                DEFAULT = readTxtResults('../accuraciesOutput/default/bitfinex_tBTCUSD_1h.csv_Classification_FALSE_RELATIONS.txt')
-                RF_OPTIMIZED = readTxtResults('../accuraciesOutput/rf_optimized/bitfinex_tBTCUSD_1h.csv_Classification_FALSE_RELATIONS.txt')
-                NO_RELATIONS = readTxtResults('../accuraciesOutput/no_relations/bitfinex_tBTCUSD_1h.csv_Classification_FALSE_RELATIONS.txt')
-                RELATIONS = readTxtResults('../accuraciesOutput/relations/bitfinex_tBTCUSD_1h.csv_Classification_TRUE_RELATIONS.txt')
-            elif intervalType == "Minute":
-                DEFAULT = readTxtResults('../accuraciesOutput/default/bitfinex_tBTCUSD_1m.csv_Classification_FALSE_RELATIONS.txt')
-                RF_OPTIMIZED = readTxtResults('../accuraciesOutput/rf_optimized/bitfinex_tBTCUSD_1m.csv_Classification_FALSE_RELATIONS.txt')
-                NO_RELATIONS = readTxtResults('../accuraciesOutput/no_relations/bitfinex_tBTCUSD_1m.csv_Classification_FALSE_RELATIONS.txt')
-                RELATIONS = readTxtResults('../accuraciesOutput/relations/bitfinex_tBTCUSD_1m.csv_Classification_TRUE_RELATIONS.txt')
-        elif FeeModel == "ON":
-            if intervalType == "Day":
-                DEFAULT = readTxtResults('../accuraciesOutput_feeModel/default/BTCUSD_1Day.csv_Classification_FALSE_RELATIONS.txt')
-                RF_OPTIMIZED = readTxtResults('../accuraciesOutput_feeModel/rf_optimized/BTCUSD_1Day.csv_Classification_FALSE_RELATIONS.txt')
-                NO_RELATIONS = readTxtResults('../accuraciesOutput_feeModel/no_relations/BTCUSD_1Day.csv_Classification_FALSE_RELATIONS.txt')
-                RELATIONS = readTxtResults('../accuraciesOutput_feeModel/relations/BTCUSD_1Day.csv_Classification_TRUE_RELATIONS.txt')
-            elif intervalType == "Hour":
-                DEFAULT = readTxtResults('../accuraciesOutput_feeModel/default/bitfinex_tBTCUSD_1h.csv_Classification_FALSE_RELATIONS.txt')
-                RF_OPTIMIZED = readTxtResults('../accuraciesOutput_feeModel/rf_optimized/bitfinex_tBTCUSD_1h.csv_Classification_FALSE_RELATIONS.txt')
-                NO_RELATIONS = readTxtResults('../accuraciesOutput_feeModel/no_relations/bitfinex_tBTCUSD_1h.csv_Classification_FALSE_RELATIONS.txt')
-                RELATIONS = readTxtResults('../accuraciesOutput_feeModel/relations/bitfinex_tBTCUSD_1h.csv_Classification_TRUE_RELATIONS.txt')
-            elif intervalType == "Minute":
-                DEFAULT = readTxtResults('../accuraciesOutput_feeModel/default/bitfinex_tBTCUSD_1m.csv_Classification_FALSE_RELATIONS.txt')
-                RF_OPTIMIZED = readTxtResults('../accuraciesOutput_feeModel/rf_optimized/bitfinex_tBTCUSD_1m.csv_Classification_FALSE_RELATIONS.txt')
-                NO_RELATIONS = readTxtResults('../accuraciesOutput_feeModel/no_relations/bitfinex_tBTCUSD_1m.csv_Classification_FALSE_RELATIONS.txt')
-                RELATIONS = readTxtResults('../accuraciesOutput_feeModel/relations/bitfinex_tBTCUSD_1m.csv_Classification_TRUE_RELATIONS.txt')
-        xLabelNames = ['Default', 'RF Optimized', '68 Hyp..', '14 Hyp..',
+        if intervalType == "Day":
+            DEFAULT = readTxtResults('../accuraciesOutput/default/BTCUSD_1Day.csv_Classification_FALSE_RELATIONS.txt')
+            RF_OPTIMIZED = readTxtResults('../accuraciesOutput/rf_optimized/BTCUSD_1Day.csv_Classification_FALSE_RELATIONS.txt')
+            NO_RELATIONS = readTxtResults('../accuraciesOutput/no_relations/BTCUSD_1Day.csv_Classification_FALSE_RELATIONS.txt')
+            RELATIONS = readTxtResults('../accuraciesOutput/relations/BTCUSD_1Day.csv_Classification_TRUE_RELATIONS.txt')
+        elif intervalType == "Hour":
+            DEFAULT = readTxtResults('../accuraciesOutput/default/bitfinex_tBTCUSD_1h.csv_Classification_FALSE_RELATIONS.txt')
+            RF_OPTIMIZED = readTxtResults('../accuraciesOutput/rf_optimized/bitfinex_tBTCUSD_1h.csv_Classification_FALSE_RELATIONS.txt')
+            NO_RELATIONS = readTxtResults('../accuraciesOutput/no_relations/bitfinex_tBTCUSD_1h.csv_Classification_FALSE_RELATIONS.txt')
+            RELATIONS = readTxtResults('../accuraciesOutput/relations/bitfinex_tBTCUSD_1h.csv_Classification_TRUE_RELATIONS.txt')
+        elif intervalType == "Minute":
+            DEFAULT = readTxtResults('../accuraciesOutput/default/bitfinex_tBTCUSD_1m.csv_Classification_FALSE_RELATIONS.txt')
+            RF_OPTIMIZED = readTxtResults('../accuraciesOutput/rf_optimized/bitfinex_tBTCUSD_1m.csv_Classification_FALSE_RELATIONS.txt')
+            NO_RELATIONS = readTxtResults('../accuraciesOutput/no_relations/bitfinex_tBTCUSD_1m.csv_Classification_FALSE_RELATIONS.txt')
+            RELATIONS = readTxtResults('../accuraciesOutput/relations/bitfinex_tBTCUSD_1m.csv_Classification_TRUE_RELATIONS.txt')
+        xLabelNames = ['Default', 'RF Optimized', '75 Hyp..', '14 Hyp..',
                        'No-change', 'Stratified', 'Most Frequent', 'Prior']
         data = [DEFAULT, RF_OPTIMIZED, NO_RELATIONS, RELATIONS, [accuracy_nochange], [accuracy_stratified],
                 [accuracy_mostfrequent], [accuracy_prior]]
+
     # Export the predicted model
     df = df[len(X_train):]
     if MachineLearningMethod == "Classification":
@@ -453,7 +430,6 @@ def calculateBaselines(df, target, intervalType, MachineLearningMethod, FeeModel
     nameOfExportedModel = intervalType + "_" + MachineLearningMethod
     df.to_csv("../PredictedModels/baselineModels/" + nameOfExportedModel + ".csv")
 
-
     matplotlib.use("pgf")
     matplotlib.rcParams.update({
         "pgf.texsystem": "pdflatex",
@@ -462,13 +438,12 @@ def calculateBaselines(df, target, intervalType, MachineLearningMethod, FeeModel
         'pgf.rcfonts': False,
     })
 
-    fig, ax = plt.subplots(figsize=(6.69,4))
+    fig, ax = plt.subplots()
     ax.set_xticklabels(
         xLabelNames
         )
     ax.set_title(MachineLearningMethod + ' Baselines for interval: ' + intervalType)
     ax.boxplot(data)
-    #plt.savefig('histogram.png')
     plt.savefig('histogram.pgf')
     plt.show()
     exit()
@@ -587,7 +562,6 @@ def main(argv):
         shortenDataset = 'year'
 
     # For calculating all baselines
-    FeeModel = "OFF"
     # Regression
     if Slurm_Task_idx == -1:
         CSV_Path = "../inputs/BTCUSD_1Day.csv"
@@ -605,54 +579,27 @@ def main(argv):
         CSV_Path = "../inputs/bitfinex_tBTCUSD_1m.csv"
         dateTimeFormat = '%m/%d/%Y %H:%M:%S'
         MachineLearningMethod = "Regression"
-        shortenDataset = 'year'
+        shortenDataset = 'month'
         intervalType = "Minute"
     #Classification
     elif Slurm_Task_idx == -4:
         CSV_Path = "../inputs/BTCUSD_1Day.csv"
         dateTimeFormat = '%Y-%m-%d %H:%M:%S'  # 1d dataset
         MachineLearningMethod = "Classification"
-        FeeModel = "OFF"
         shortenDataset = False
         intervalType = "Day"
     elif Slurm_Task_idx == -5:
         CSV_Path = "../inputs/bitfinex_tBTCUSD_1h.csv"
         dateTimeFormat = '%m/%d/%Y %H:%M:%S'
         MachineLearningMethod = "Classification"
-        FeeModel = "OFF"
         shortenDataset = False
         intervalType = "Hour"
     elif Slurm_Task_idx == -6:
         CSV_Path = "../inputs/bitfinex_tBTCUSD_1m.csv"
         dateTimeFormat = '%m/%d/%Y %H:%M:%S'
         MachineLearningMethod = "Classification"
-        FeeModel = "OFF"
         shortenDataset = 'year'
         intervalType = "Minute"
-    # Classification Fee Model
-    elif Slurm_Task_idx == -7:
-        CSV_Path = "../inputs/BTCUSD_1Day.csv"
-        dateTimeFormat = '%Y-%m-%d %H:%M:%S'  # 1d dataset
-        MachineLearningMethod = "Classification"
-        FeeModel = "ON"
-        shortenDataset = False
-        intervalType = "Day"
-    elif Slurm_Task_idx == -8:
-        CSV_Path = "../inputs/bitfinex_tBTCUSD_1h.csv"
-        dateTimeFormat = '%m/%d/%Y %H:%M:%S'
-        MachineLearningMethod = "Classification"
-        FeeModel = "ON"
-        shortenDataset = False
-        intervalType = "Hour"
-    elif Slurm_Task_idx == -9:
-        CSV_Path = "../inputs/bitfinex_tBTCUSD_1m.csv"
-        dateTimeFormat = '%m/%d/%Y %H:%M:%S'
-        MachineLearningMethod = "Classification"
-        FeeModel = "ON"
-        shortenDataset = 'year'
-        intervalType = "Minute"
-
-
 
     # Set Variables
     # CSV_Path = read dataframe input open,low,high,close
@@ -722,7 +669,7 @@ def main(argv):
     # (optional): Calculate baselines
     # Note: Program stops after calculating baselines
     if Slurm_Task_idx < 0:
-        calculateBaselines(df, target, intervalType, MachineLearningMethod, FeeModel)
+        calculateBaselines(df, target, intervalType, MachineLearningMethod)
 
     # 4. Train test split
     # __________________________
@@ -745,15 +692,11 @@ def main(argv):
 
     if RunType == 1:
         pipeline_class = Pipeline(steps=[
-            ('BitcoinTransformer', BitcoinTransformer()
-             ),
             ('imputing', SimpleImputer(missing_values=np.nan, strategy='mean')),
             ('classify', RandomForestClas_Reg)
         ])
     elif RunType == 2:
         pipeline_class = Pipeline(steps=[
-            ('BitcoinTransformer', ParameterRelationsBTCTrans()
-             ),
             ('imputing', SimpleImputer(missing_values=np.nan, strategy='mean')),
             ('classify', RandomForestClas_Reg)
         ])
@@ -808,8 +751,9 @@ def main(argv):
     elif (TypeOfTest == 2):
         folder = 'relations'
     elif (TypeOfTest == 3):
-        folder = 'rf_optimized_bigger'
-    file = open('../accuraciesOutput/' + folder + '/' + outputFileName + '.txt', 'a')
+        folder = 'rf_optimized'
+    file = open('../accuraciesOutput_NoTI/' + folder + '/' + outputFileName + '.txt', 'a')
+
 
     # Tell us what settings we are going to run
     print("___________________________________________")
@@ -868,7 +812,7 @@ def main(argv):
     df['Change'] = dfClose.pct_change(periods=1)  # Contains percentage change
     df = df[['Timestamp', 'Close', 'Change', 'Target', 'Predicted']]
 
-    df.to_csv("../PredictedModels/rf_optimized_bigger_" + nameOfExportedModel + ".csv")
+   # df.to_csv("../PredictedModels/" + nameOfExportedModel + ".csv")
 
     # 7. Scores
     # __________________________

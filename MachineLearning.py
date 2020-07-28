@@ -33,7 +33,7 @@ from collections import Counter
 # (in the same directory that your python process is based)
 # Control delimiters, rows, column names with read_csv (see later) 
 
-df = pd.read_csv("outputs/23062020_Classification_1MIN_ALLTI.csv")
+df = pd.read_csv("outputs/25072020_Classification_1MIN_ALLTI.csv")
 
 #df = pd.read_csv("output_AllData_moreTI.csv") 
 # Delete columns that contains only NaN values

@@ -23,7 +23,7 @@ TYPE_REGRESSION = "Difference" #Difference or Percentage or Target (value of tom
 INTERVAL_PERIOD = 1 #How much intervals do we need to look in the future? 1 = next
 EXPORT = "CSV" #Options: EXCEL , CSV , NONE
 EXPORT_NAME_EXCEL = "output_TestData.xlsx"
-EXPORT_NAME_CSV = "outputs/23062020_Classification_1MIN_ALLTI.csv"
+EXPORT_NAME_CSV = "outputs/25072020_Classification_1MIN_ALLTI.csv"
 
 # Read data from file 'filename.csv' 
 # (in the same directory that your python process is based)
@@ -334,7 +334,8 @@ print('Creating Target...')
 start_time = time.time()
 if TYPE_MACHINE_LEARNING == "Classification":
     # Add new column 'Target' . True if Close price from this timestmap is higher than Close price of previous timestamp
-    df['Target'] = np.where(df.Close.shift(-1) > df.Close, True, False)
+    #df['Target'] = np.where(df.Close.shift(-1) > df.Close, True, False)
+    df['Target'] = np.where(df.Close.shift(-1) * (1 - (0.10 / 100)) > df.Close, True, False)
 elif TYPE_MACHINE_LEARNING == "Regression":
     if TYPE_REGRESSION == "Difference":
         df['Target'] = df.Close.shift(-INTERVAL_PERIOD) - df.Close
