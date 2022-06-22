@@ -1,6 +1,6 @@
 TA_Lib==0.4.17
 pandas==0.25.3
-numpy==1.18.3
+numpy==1.22.0
 scipy==1.4.1
 openpyxl==3.0.3
 ta==0.5.20
